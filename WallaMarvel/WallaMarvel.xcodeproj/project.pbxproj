@@ -13,6 +13,9 @@
 		1D31F0562E4A8F41002CF302 /* WallaMarvelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F0542E4A8F41002CF302 /* WallaMarvelTests.swift */; };
 		1D31F05A2E4A8F58002CF302 /* WallaMarvelUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F0582E4A8F58002CF302 /* WallaMarvelUITestsLaunchTests.swift */; };
 		1D31F05B2E4A8F58002CF302 /* WallaMarvelUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F0572E4A8F58002CF302 /* WallaMarvelUITests.swift */; };
+		1D31F05E2E4A934D002CF302 /* NetworkClient in Frameworks */ = {isa = PBXBuildFile; productRef = 1D31F05D2E4A934D002CF302 /* NetworkClient */; };
+		1D31F0602E4A992E002CF302 /* NetworkClientConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F05F2E4A98FE002CF302 /* NetworkClientConfiguration.swift */; };
+		1D31F0632E4A9A5A002CF302 /* NetworkAPIKeysMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F0622E4A9A40002CF302 /* NetworkAPIKeysMiddleware.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -42,6 +45,8 @@
 		1D31F0542E4A8F41002CF302 /* WallaMarvelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallaMarvelTests.swift; sourceTree = "<group>"; };
 		1D31F0572E4A8F58002CF302 /* WallaMarvelUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallaMarvelUITests.swift; sourceTree = "<group>"; };
 		1D31F0582E4A8F58002CF302 /* WallaMarvelUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallaMarvelUITestsLaunchTests.swift; sourceTree = "<group>"; };
+		1D31F05F2E4A98FE002CF302 /* NetworkClientConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClientConfiguration.swift; sourceTree = "<group>"; };
+		1D31F0622E4A9A40002CF302 /* NetworkAPIKeysMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkAPIKeysMiddleware.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -49,6 +54,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1D31F05E2E4A934D002CF302 /* NetworkClient in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -72,6 +78,7 @@
 		1D31F01B2E4A8AD1002CF302 = {
 			isa = PBXGroup;
 			children = (
+				1D31F0612E4A9A12002CF302 /* NetworkClient Configuration */,
 				1D31F04E2E4A8EDB002CF302 /* Assets.xcassets */,
 				1D31F04F2E4A8EDB002CF302 /* ContentView.swift */,
 				1D31F0502E4A8EDB002CF302 /* WallaMarvelApp.swift */,
@@ -108,6 +115,15 @@
 			path = WallaMarvelUITests;
 			sourceTree = "<group>";
 		};
+		1D31F0612E4A9A12002CF302 /* NetworkClient Configuration */ = {
+			isa = PBXGroup;
+			children = (
+				1D31F0622E4A9A40002CF302 /* NetworkAPIKeysMiddleware.swift */,
+				1D31F05F2E4A98FE002CF302 /* NetworkClientConfiguration.swift */,
+			);
+			path = "NetworkClient Configuration";
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -125,6 +141,7 @@
 			);
 			name = WallaMarvel;
 			packageProductDependencies = (
+				1D31F05D2E4A934D002CF302 /* NetworkClient */,
 			);
 			productName = WallaMarvel;
 			productReference = 1D31F0242E4A8AD1002CF302 /* WallaMarvel.app */;
@@ -203,6 +220,9 @@
 			);
 			mainGroup = 1D31F01B2E4A8AD1002CF302;
 			minimizedProjectReferenceProxies = 1;
+			packageReferences = (
+				1D31F05C2E4A934D002CF302 /* XCLocalSwiftPackageReference "../Modules/NetworkClient" */,
+			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1D31F0252E4A8AD1002CF302 /* Products */;
 			projectDirPath = "";
@@ -246,7 +266,9 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D31F0512E4A8EDB002CF302 /* ContentView.swift in Sources */,
+				1D31F0602E4A992E002CF302 /* NetworkClientConfiguration.swift in Sources */,
 				1D31F0522E4A8EDB002CF302 /* WallaMarvelApp.swift in Sources */,
+				1D31F0632E4A9A5A002CF302 /* NetworkAPIKeysMiddleware.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -575,6 +597,20 @@
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
+
+/* Begin XCLocalSwiftPackageReference section */
+		1D31F05C2E4A934D002CF302 /* XCLocalSwiftPackageReference "../Modules/NetworkClient" */ = {
+			isa = XCLocalSwiftPackageReference;
+			relativePath = ../Modules/NetworkClient;
+		};
+/* End XCLocalSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		1D31F05D2E4A934D002CF302 /* NetworkClient */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NetworkClient;
+		};
+/* End XCSwiftPackageProductDependency section */
 	};
 	rootObject = 1D31F01C2E4A8AD1002CF302 /* Project object */;
 }
