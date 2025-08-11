@@ -1,0 +1,580 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 77;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		1D31F0512E4A8EDB002CF302 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F04F2E4A8EDB002CF302 /* ContentView.swift */; };
+		1D31F0522E4A8EDB002CF302 /* WallaMarvelApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F0502E4A8EDB002CF302 /* WallaMarvelApp.swift */; };
+		1D31F0532E4A8EDB002CF302 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D31F04E2E4A8EDB002CF302 /* Assets.xcassets */; };
+		1D31F0562E4A8F41002CF302 /* WallaMarvelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F0542E4A8F41002CF302 /* WallaMarvelTests.swift */; };
+		1D31F05A2E4A8F58002CF302 /* WallaMarvelUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F0582E4A8F58002CF302 /* WallaMarvelUITestsLaunchTests.swift */; };
+		1D31F05B2E4A8F58002CF302 /* WallaMarvelUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F0572E4A8F58002CF302 /* WallaMarvelUITests.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		1D31F0322E4A8AD3002CF302 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1D31F01C2E4A8AD1002CF302 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1D31F0232E4A8AD1002CF302;
+			remoteInfo = WallaMarvel;
+		};
+		1D31F03C2E4A8AD3002CF302 /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 1D31F01C2E4A8AD1002CF302 /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 1D31F0232E4A8AD1002CF302;
+			remoteInfo = WallaMarvel;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		1D31F0242E4A8AD1002CF302 /* WallaMarvel.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = WallaMarvel.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D31F0312E4A8AD3002CF302 /* WallaMarvelTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WallaMarvelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D31F03B2E4A8AD3002CF302 /* WallaMarvelUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WallaMarvelUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		1D31F04E2E4A8EDB002CF302 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1D31F04F2E4A8EDB002CF302 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		1D31F0502E4A8EDB002CF302 /* WallaMarvelApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallaMarvelApp.swift; sourceTree = "<group>"; };
+		1D31F0542E4A8F41002CF302 /* WallaMarvelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallaMarvelTests.swift; sourceTree = "<group>"; };
+		1D31F0572E4A8F58002CF302 /* WallaMarvelUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallaMarvelUITests.swift; sourceTree = "<group>"; };
+		1D31F0582E4A8F58002CF302 /* WallaMarvelUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallaMarvelUITestsLaunchTests.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		1D31F0212E4A8AD1002CF302 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D31F02E2E4A8AD3002CF302 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D31F0382E4A8AD3002CF302 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		1D31F01B2E4A8AD1002CF302 = {
+			isa = PBXGroup;
+			children = (
+				1D31F04E2E4A8EDB002CF302 /* Assets.xcassets */,
+				1D31F04F2E4A8EDB002CF302 /* ContentView.swift */,
+				1D31F0502E4A8EDB002CF302 /* WallaMarvelApp.swift */,
+				1D31F0592E4A8F58002CF302 /* WallaMarvelUITests */,
+				1D31F0552E4A8F41002CF302 /* WallaMarvelTests */,
+				1D31F0252E4A8AD1002CF302 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		1D31F0252E4A8AD1002CF302 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				1D31F0242E4A8AD1002CF302 /* WallaMarvel.app */,
+				1D31F0312E4A8AD3002CF302 /* WallaMarvelTests.xctest */,
+				1D31F03B2E4A8AD3002CF302 /* WallaMarvelUITests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		1D31F0552E4A8F41002CF302 /* WallaMarvelTests */ = {
+			isa = PBXGroup;
+			children = (
+				1D31F0542E4A8F41002CF302 /* WallaMarvelTests.swift */,
+			);
+			path = WallaMarvelTests;
+			sourceTree = "<group>";
+		};
+		1D31F0592E4A8F58002CF302 /* WallaMarvelUITests */ = {
+			isa = PBXGroup;
+			children = (
+				1D31F0572E4A8F58002CF302 /* WallaMarvelUITests.swift */,
+				1D31F0582E4A8F58002CF302 /* WallaMarvelUITestsLaunchTests.swift */,
+			);
+			path = WallaMarvelUITests;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		1D31F0232E4A8AD1002CF302 /* WallaMarvel */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D31F0452E4A8AD3002CF302 /* Build configuration list for PBXNativeTarget "WallaMarvel" */;
+			buildPhases = (
+				1D31F0202E4A8AD1002CF302 /* Sources */,
+				1D31F0212E4A8AD1002CF302 /* Frameworks */,
+				1D31F0222E4A8AD1002CF302 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = WallaMarvel;
+			packageProductDependencies = (
+			);
+			productName = WallaMarvel;
+			productReference = 1D31F0242E4A8AD1002CF302 /* WallaMarvel.app */;
+			productType = "com.apple.product-type.application";
+		};
+		1D31F0302E4A8AD3002CF302 /* WallaMarvelTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D31F0482E4A8AD3002CF302 /* Build configuration list for PBXNativeTarget "WallaMarvelTests" */;
+			buildPhases = (
+				1D31F02D2E4A8AD3002CF302 /* Sources */,
+				1D31F02E2E4A8AD3002CF302 /* Frameworks */,
+				1D31F02F2E4A8AD3002CF302 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1D31F0332E4A8AD3002CF302 /* PBXTargetDependency */,
+			);
+			name = WallaMarvelTests;
+			packageProductDependencies = (
+			);
+			productName = WallaMarvelTests;
+			productReference = 1D31F0312E4A8AD3002CF302 /* WallaMarvelTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+		1D31F03A2E4A8AD3002CF302 /* WallaMarvelUITests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 1D31F04B2E4A8AD3002CF302 /* Build configuration list for PBXNativeTarget "WallaMarvelUITests" */;
+			buildPhases = (
+				1D31F0372E4A8AD3002CF302 /* Sources */,
+				1D31F0382E4A8AD3002CF302 /* Frameworks */,
+				1D31F0392E4A8AD3002CF302 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				1D31F03D2E4A8AD3002CF302 /* PBXTargetDependency */,
+			);
+			name = WallaMarvelUITests;
+			packageProductDependencies = (
+			);
+			productName = WallaMarvelUITests;
+			productReference = 1D31F03B2E4A8AD3002CF302 /* WallaMarvelUITests.xctest */;
+			productType = "com.apple.product-type.bundle.ui-testing";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		1D31F01C2E4A8AD1002CF302 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1640;
+				LastUpgradeCheck = 1640;
+				TargetAttributes = {
+					1D31F0232E4A8AD1002CF302 = {
+						CreatedOnToolsVersion = 16.4;
+						LastSwiftMigration = 1640;
+					};
+					1D31F0302E4A8AD3002CF302 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 1D31F0232E4A8AD1002CF302;
+					};
+					1D31F03A2E4A8AD3002CF302 = {
+						CreatedOnToolsVersion = 16.4;
+						TestTargetID = 1D31F0232E4A8AD1002CF302;
+					};
+				};
+			};
+			buildConfigurationList = 1D31F01F2E4A8AD1002CF302 /* Build configuration list for PBXProject "WallaMarvel" */;
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 1D31F01B2E4A8AD1002CF302;
+			minimizedProjectReferenceProxies = 1;
+			preferredProjectObjectVersion = 77;
+			productRefGroup = 1D31F0252E4A8AD1002CF302 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				1D31F0232E4A8AD1002CF302 /* WallaMarvel */,
+				1D31F0302E4A8AD3002CF302 /* WallaMarvelTests */,
+				1D31F03A2E4A8AD3002CF302 /* WallaMarvelUITests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		1D31F0222E4A8AD1002CF302 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D31F0532E4A8EDB002CF302 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D31F02F2E4A8AD3002CF302 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D31F0392E4A8AD3002CF302 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		1D31F0202E4A8AD1002CF302 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D31F0512E4A8EDB002CF302 /* ContentView.swift in Sources */,
+				1D31F0522E4A8EDB002CF302 /* WallaMarvelApp.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D31F02D2E4A8AD3002CF302 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D31F0562E4A8F41002CF302 /* WallaMarvelTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		1D31F0372E4A8AD3002CF302 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				1D31F05A2E4A8F58002CF302 /* WallaMarvelUITestsLaunchTests.swift in Sources */,
+				1D31F05B2E4A8F58002CF302 /* WallaMarvelUITests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		1D31F0332E4A8AD3002CF302 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1D31F0232E4A8AD1002CF302 /* WallaMarvel */;
+			targetProxy = 1D31F0322E4A8AD3002CF302 /* PBXContainerItemProxy */;
+		};
+		1D31F03D2E4A8AD3002CF302 /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 1D31F0232E4A8AD1002CF302 /* WallaMarvel */;
+			targetProxy = 1D31F03C2E4A8AD3002CF302 /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		1D31F0432E4A8AD3002CF302 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				DEVELOPMENT_TEAM = 9DQWJ9R9K8;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		1D31F0442E4A8AD3002CF302 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				DEVELOPMENT_TEAM = 9DQWJ9R9K8;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		1D31F0462E4A8AD3002CF302 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9DQWJ9R9K8;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.WallaMarvel;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		1D31F0472E4A8AD3002CF302 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CLANG_ENABLE_MODULES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9DQWJ9R9K8;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.WallaMarvel;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		1D31F0492E4A8AD3002CF302 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9DQWJ9R9K8;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.WallaMarvelTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WallaMarvel.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WallaMarvel";
+			};
+			name = Debug;
+		};
+		1D31F04A2E4A8AD3002CF302 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9DQWJ9R9K8;
+				GENERATE_INFOPLIST_FILE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 18.5;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.WallaMarvelTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/WallaMarvel.app/$(BUNDLE_EXECUTABLE_FOLDER_PATH)/WallaMarvel";
+			};
+			name = Release;
+		};
+		1D31F04C2E4A8AD3002CF302 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9DQWJ9R9K8;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.WallaMarvelUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WallaMarvel;
+			};
+			name = Debug;
+		};
+		1D31F04D2E4A8AD3002CF302 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_TEAM = 9DQWJ9R9K8;
+				GENERATE_INFOPLIST_FILE = YES;
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = test.WallaMarvelUITests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = NO;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+				TEST_TARGET_NAME = WallaMarvel;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		1D31F01F2E4A8AD1002CF302 /* Build configuration list for PBXProject "WallaMarvel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D31F0432E4A8AD3002CF302 /* Debug */,
+				1D31F0442E4A8AD3002CF302 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1D31F0452E4A8AD3002CF302 /* Build configuration list for PBXNativeTarget "WallaMarvel" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D31F0462E4A8AD3002CF302 /* Debug */,
+				1D31F0472E4A8AD3002CF302 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1D31F0482E4A8AD3002CF302 /* Build configuration list for PBXNativeTarget "WallaMarvelTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D31F0492E4A8AD3002CF302 /* Debug */,
+				1D31F04A2E4A8AD3002CF302 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		1D31F04B2E4A8AD3002CF302 /* Build configuration list for PBXNativeTarget "WallaMarvelUITests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				1D31F04C2E4A8AD3002CF302 /* Debug */,
+				1D31F04D2E4A8AD3002CF302 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 1D31F01C2E4A8AD1002CF302 /* Project object */;
+}
