@@ -7,15 +7,17 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		1D31F0512E4A8EDB002CF302 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F04F2E4A8EDB002CF302 /* ContentView.swift */; };
-		1D31F0522E4A8EDB002CF302 /* WallaMarvelApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F0502E4A8EDB002CF302 /* WallaMarvelApp.swift */; };
+		1D158AC02E4EA4CA00C94127 /* HeroesCore in Frameworks */ = {isa = PBXBuildFile; productRef = 1D158ABF2E4EA4CA00C94127 /* HeroesCore */; };
+		1D158AC32E4EA8FA00C94127 /* NetworkClientConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 1D158AC22E4EA8FA00C94127 /* NetworkClientConfig */; };
+		1D158AC52E4EA9C300C94127 /* NetworkClientConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 1D158AC42E4EA9C300C94127 /* NetworkClientConfig */; };
+		1D31F0522E4A8EDB002CF302 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F0502E4A8EDB002CF302 /* AppDelegate.swift */; };
 		1D31F0532E4A8EDB002CF302 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1D31F04E2E4A8EDB002CF302 /* Assets.xcassets */; };
 		1D31F0562E4A8F41002CF302 /* WallaMarvelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F0542E4A8F41002CF302 /* WallaMarvelTests.swift */; };
 		1D31F05A2E4A8F58002CF302 /* WallaMarvelUITestsLaunchTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F0582E4A8F58002CF302 /* WallaMarvelUITestsLaunchTests.swift */; };
 		1D31F05B2E4A8F58002CF302 /* WallaMarvelUITests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F0572E4A8F58002CF302 /* WallaMarvelUITests.swift */; };
 		1D31F05E2E4A934D002CF302 /* NetworkClient in Frameworks */ = {isa = PBXBuildFile; productRef = 1D31F05D2E4A934D002CF302 /* NetworkClient */; };
-		1D31F0602E4A992E002CF302 /* NetworkClientConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F05F2E4A98FE002CF302 /* NetworkClientConfiguration.swift */; };
-		1D31F0632E4A9A5A002CF302 /* NetworkAPIKeysMiddleware.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D31F0622E4A9A40002CF302 /* NetworkAPIKeysMiddleware.swift */; };
+		1D4B96EE2E4EBEC200505D4B /* NetworkClientConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 1D4B96ED2E4EBEC200505D4B /* NetworkClientConfig */; };
+		1D4B96F82E4EDA6F00505D4B /* Heroes in Frameworks */ = {isa = PBXBuildFile; productRef = 1D4B96F72E4EDA6F00505D4B /* Heroes */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,13 +42,15 @@
 		1D31F0312E4A8AD3002CF302 /* WallaMarvelTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WallaMarvelTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D31F03B2E4A8AD3002CF302 /* WallaMarvelUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = WallaMarvelUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		1D31F04E2E4A8EDB002CF302 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		1D31F04F2E4A8EDB002CF302 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		1D31F0502E4A8EDB002CF302 /* WallaMarvelApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallaMarvelApp.swift; sourceTree = "<group>"; };
+		1D31F0502E4A8EDB002CF302 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		1D31F0542E4A8F41002CF302 /* WallaMarvelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallaMarvelTests.swift; sourceTree = "<group>"; };
 		1D31F0572E4A8F58002CF302 /* WallaMarvelUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallaMarvelUITests.swift; sourceTree = "<group>"; };
 		1D31F0582E4A8F58002CF302 /* WallaMarvelUITestsLaunchTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WallaMarvelUITestsLaunchTests.swift; sourceTree = "<group>"; };
-		1D31F05F2E4A98FE002CF302 /* NetworkClientConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkClientConfiguration.swift; sourceTree = "<group>"; };
-		1D31F0622E4A9A40002CF302 /* NetworkAPIKeysMiddleware.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkAPIKeysMiddleware.swift; sourceTree = "<group>"; };
+		1D4B96F02E4EC08800505D4B /* Heroes */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Heroes; sourceTree = "<group>"; };
+		1D4B96F12E4EC08800505D4B /* HeroesCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = HeroesCore; sourceTree = "<group>"; };
+		1D4B96F22E4EC08800505D4B /* NetworkClient */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = NetworkClient; sourceTree = "<group>"; };
+		1D4B96F32E4EC08800505D4B /* NetworkClientConfig */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = NetworkClientConfig; sourceTree = "<group>"; };
+		1D4B97202E4EE10C00505D4B /* WallaMarvel-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "WallaMarvel-Info.plist"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -55,6 +59,11 @@
 			buildActionMask = 2147483647;
 			files = (
 				1D31F05E2E4A934D002CF302 /* NetworkClient in Frameworks */,
+				1D158AC02E4EA4CA00C94127 /* HeroesCore in Frameworks */,
+				1D4B96F82E4EDA6F00505D4B /* Heroes in Frameworks */,
+				1D158AC52E4EA9C300C94127 /* NetworkClientConfig in Frameworks */,
+				1D158AC32E4EA8FA00C94127 /* NetworkClientConfig in Frameworks */,
+				1D4B96EE2E4EBEC200505D4B /* NetworkClientConfig in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -78,12 +87,13 @@
 		1D31F01B2E4A8AD1002CF302 = {
 			isa = PBXGroup;
 			children = (
-				1D31F0612E4A9A12002CF302 /* NetworkClient Configuration */,
+				1D4B97202E4EE10C00505D4B /* WallaMarvel-Info.plist */,
+				1D4B96F42E4EC08800505D4B /* Modules */,
 				1D31F04E2E4A8EDB002CF302 /* Assets.xcassets */,
-				1D31F04F2E4A8EDB002CF302 /* ContentView.swift */,
-				1D31F0502E4A8EDB002CF302 /* WallaMarvelApp.swift */,
+				1D31F0502E4A8EDB002CF302 /* AppDelegate.swift */,
 				1D31F0592E4A8F58002CF302 /* WallaMarvelUITests */,
 				1D31F0552E4A8F41002CF302 /* WallaMarvelTests */,
+				1D4B96F62E4EDA6F00505D4B /* Frameworks */,
 				1D31F0252E4A8AD1002CF302 /* Products */,
 			);
 			sourceTree = "<group>";
@@ -115,13 +125,23 @@
 			path = WallaMarvelUITests;
 			sourceTree = "<group>";
 		};
-		1D31F0612E4A9A12002CF302 /* NetworkClient Configuration */ = {
+		1D4B96F42E4EC08800505D4B /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				1D31F0622E4A9A40002CF302 /* NetworkAPIKeysMiddleware.swift */,
-				1D31F05F2E4A98FE002CF302 /* NetworkClientConfiguration.swift */,
+				1D4B96F02E4EC08800505D4B /* Heroes */,
+				1D4B96F12E4EC08800505D4B /* HeroesCore */,
+				1D4B96F22E4EC08800505D4B /* NetworkClient */,
+				1D4B96F32E4EC08800505D4B /* NetworkClientConfig */,
 			);
-			path = "NetworkClient Configuration";
+			name = Modules;
+			path = ../Modules;
+			sourceTree = SOURCE_ROOT;
+		};
+		1D4B96F62E4EDA6F00505D4B /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -142,6 +162,11 @@
 			name = WallaMarvel;
 			packageProductDependencies = (
 				1D31F05D2E4A934D002CF302 /* NetworkClient */,
+				1D158ABF2E4EA4CA00C94127 /* HeroesCore */,
+				1D158AC22E4EA8FA00C94127 /* NetworkClientConfig */,
+				1D158AC42E4EA9C300C94127 /* NetworkClientConfig */,
+				1D4B96ED2E4EBEC200505D4B /* NetworkClientConfig */,
+				1D4B96F72E4EDA6F00505D4B /* Heroes */,
 			);
 			productName = WallaMarvel;
 			productReference = 1D31F0242E4A8AD1002CF302 /* WallaMarvel.app */;
@@ -221,7 +246,6 @@
 			mainGroup = 1D31F01B2E4A8AD1002CF302;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
-				1D31F05C2E4A934D002CF302 /* XCLocalSwiftPackageReference "../Modules/NetworkClient" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1D31F0252E4A8AD1002CF302 /* Products */;
@@ -265,10 +289,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1D31F0512E4A8EDB002CF302 /* ContentView.swift in Sources */,
-				1D31F0602E4A992E002CF302 /* NetworkClientConfiguration.swift in Sources */,
-				1D31F0522E4A8EDB002CF302 /* WallaMarvelApp.swift in Sources */,
-				1D31F0632E4A9A5A002CF302 /* NetworkAPIKeysMiddleware.swift in Sources */,
+				1D31F0522E4A8EDB002CF302 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -437,7 +458,7 @@
 				DEVELOPMENT_TEAM = 9DQWJ9R9K8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_FILE = "WallaMarvel-Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -467,7 +488,7 @@
 				DEVELOPMENT_TEAM = 9DQWJ9R9K8;
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_FILE = "WallaMarvel-Info.plist";
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
 				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
@@ -598,17 +619,30 @@
 		};
 /* End XCConfigurationList section */
 
-/* Begin XCLocalSwiftPackageReference section */
-		1D31F05C2E4A934D002CF302 /* XCLocalSwiftPackageReference "../Modules/NetworkClient" */ = {
-			isa = XCLocalSwiftPackageReference;
-			relativePath = ../Modules/NetworkClient;
-		};
-/* End XCLocalSwiftPackageReference section */
-
 /* Begin XCSwiftPackageProductDependency section */
+		1D158ABF2E4EA4CA00C94127 /* HeroesCore */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = HeroesCore;
+		};
+		1D158AC22E4EA8FA00C94127 /* NetworkClientConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NetworkClientConfig;
+		};
+		1D158AC42E4EA9C300C94127 /* NetworkClientConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NetworkClientConfig;
+		};
 		1D31F05D2E4A934D002CF302 /* NetworkClient */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = NetworkClient;
+		};
+		1D4B96ED2E4EBEC200505D4B /* NetworkClientConfig */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = NetworkClientConfig;
+		};
+		1D4B96F72E4EDA6F00505D4B /* Heroes */ = {
+			isa = XCSwiftPackageProductDependency;
+			productName = Heroes;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

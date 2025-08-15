@@ -2,7 +2,7 @@ import Foundation
 import CryptoKit
 import NetworkClient
 
-final class NetworkAPIKeysMiddleware: MiddlewareProtocol {
+final public class NetworkAPIKeysMiddleware: MiddlewareProtocol {
     private enum Constants {
         static let apiKeyQueryParameterName = "apikey"
         static let timeStampParameterName = "ts"
