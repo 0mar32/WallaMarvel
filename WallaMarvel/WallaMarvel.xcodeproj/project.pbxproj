@@ -50,7 +50,7 @@
 		1D4B96F22E4EC08800505D4B /* NetworkClient */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = NetworkClient; sourceTree = "<group>"; };
 		1D4B96F32E4EC08800505D4B /* NetworkClientConfig */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = NetworkClientConfig; sourceTree = "<group>"; };
 		1D4B97202E4EE10C00505D4B /* WallaMarvel-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = "WallaMarvel-Info.plist"; sourceTree = "<group>"; };
-		1D9843122E4FC07800CC3C9E /* Heroes */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Heroes; sourceTree = "<group>"; };
+		1D9843132E4FC2A000CC3C9E /* Heroes */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Heroes; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -128,7 +128,7 @@
 		1D4B96F42E4EC08800505D4B /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				1D9843122E4FC07800CC3C9E /* Heroes */,
+				1D9843132E4FC2A000CC3C9E /* Heroes */,
 				1D4B96F12E4EC08800505D4B /* HeroesCore */,
 				1D4B96F22E4EC08800505D4B /* NetworkClient */,
 				1D4B96F32E4EC08800505D4B /* NetworkClientConfig */,
