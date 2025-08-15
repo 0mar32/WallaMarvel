@@ -1,0 +1,15 @@
+//
+//  HeroesContainerDto.swift
+//  HeroesCore
+//
+//  Created by Omar Tarek Mansour Omar on 15/8/25.
+//
+import Foundation
+
+struct HeroesContainerDto: Decodable {
+    let count: Int
+    let limit: Int
+    let offset: Int
+    let total: Int
+    let results: [HeroDto]
+}
