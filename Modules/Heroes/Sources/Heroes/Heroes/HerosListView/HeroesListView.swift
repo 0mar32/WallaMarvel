@@ -1,5 +1,6 @@
 import SwiftUI
 import HeroesCore
+import DesignSystem
 
 struct HeroesListView: View {
     @StateObject private var viewModel: HeroesListViewModel
@@ -15,7 +16,7 @@ struct HeroesListView: View {
     var body: some View {
         NavigationView {
             content
-                .navigationTitle("Heroes")
+                .navigationTitle(viewModel.state.viewTitle)
                 .onAppear {
                     viewModel.loadInitialHeroes()
                 }
@@ -26,9 +27,9 @@ struct HeroesListView: View {
     private var content: some View {
         switch viewModel.state {
         case .idle:
-            Text("Welcome!").foregroundColor(.gray)
-        case .loadingInitial:
-            ProgressView("Loading Heroes...")
+            Color.clear
+        case let .loadingInitial(message):
+            ProgressView(message)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
         case let .loaded(heroes, isLoadingMore):
             heroList(heroes, showFooter: isLoadingMore)
@@ -37,7 +38,7 @@ struct HeroesListView: View {
                 if !heroes.isEmpty {
                     heroList(heroes, showFooter: false)
                 }
-                Text("Error: \(message)")
+                Text(message)
                     .foregroundColor(.red)
                     .padding()
             }
@@ -45,15 +46,18 @@ struct HeroesListView: View {
     }
 
     @ViewBuilder
-    private func heroList(_ heroes: [Hero], showFooter: Bool) -> some View {
+    private func heroList(_ heroes: [HeroListItemUIModel], showFooter: Bool) -> some View {
         List {
             ForEach(heroes, id: \.id) { hero in
                 Button {
+                    guard let hero = viewModel.model(for: hero) else { return }
                     onHeroSelected(hero)
                 } label: {
-                    HeroRowView(hero: hero)
-                        .foregroundColor(.primary)
-                        .frame(maxWidth: .infinity, alignment: .leading)
+                    AvatarRowView(
+                        title: hero.name,
+                        imageURL: hero.imageURL,
+                        style: .highlighted(borderColor: Colors.Primary.lightBlue)
+                    )
                 }
                 .onAppear {
                     viewModel.loadMoreHeroesIfNeeded(currentHero: hero)

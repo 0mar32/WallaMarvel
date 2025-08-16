@@ -15,6 +15,7 @@ let package = Package(
     dependencies: [
        // Local dependencies
        .package(path: "../HeroesCore"),
+       .package(path: "../DesignSystem"),
        // External dependencies
        .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.5.0")
    ],
@@ -23,7 +24,7 @@ let package = Package(
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "HeroDetails",
-            dependencies: ["HeroesCore", "Kingfisher"]
+            dependencies: ["HeroesCore", "Kingfisher", "DesignSystem"]
         ),
         .testTarget(
             name: "HeroDetailsTests",

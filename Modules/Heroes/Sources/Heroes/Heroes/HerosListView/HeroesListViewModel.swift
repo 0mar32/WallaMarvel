@@ -7,45 +7,64 @@ import HeroesCore
 class HeroesListViewModel: ObservableObject {
     enum ViewState {
         case idle
-        case loadingInitial
-        case loaded(heroes: [Hero], isLoadingMore: Bool)
-        case error(String, [Hero])
+        case loadingInitial(message: String)
+        case loaded(heroes: [HeroListItemUIModel], isLoadingMore: Bool)
+        case error(String, [HeroListItemUIModel])
+
+        var viewTitle: String {
+            return "Heroes"
+        }
     }
 
     @Published private(set) var state: ViewState = .idle
 
     private let interactor: HeroesPaginationInteractorProtocol
+    private let heroesListMapper: HeroesListUIModelMapperProtocol
 
-    init(interactor: HeroesPaginationInteractorProtocol) {
+    private var allHeroes: [Hero] = []
+
+    init(
+        interactor: HeroesPaginationInteractorProtocol,
+        heroesListMapper: HeroesListUIModelMapperProtocol
+    ) {
         self.interactor = interactor
+        self.heroesListMapper = heroesListMapper
     }
 
     func loadInitialHeroes() {
         guard case .idle = state else { return }
 
-        state = .loadingInitial
+        state = .loadingInitial(message: "Loading Heroes...")
         Task {
             await interactor.reset()
             do {
                 let container = try await interactor.fetchNextPage()
-                state = .loaded(heroes: container.characters, isLoadingMore: false)
+                allHeroes.append(contentsOf: container.characters)
+                let heroesListUIModel = self.heroesListMapper.map(
+                    heroes: container.characters
+                )
+                state = .loaded(heroes: heroesListUIModel, isLoadingMore: false)
             } catch {
-                state = .error(error.localizedDescription, [])
+                state = .error("Error: \(error.localizedDescription)", [])
             }
         }
     }
 
-    func loadMoreHeroesIfNeeded(currentHero hero: Hero) {
+    func loadMoreHeroesIfNeeded(currentHero heroItem: HeroListItemUIModel) {
         guard case let .loaded(heroes, isLoadingMore) = state else { return }
         guard !heroes.isEmpty && !isLoadingMore else { return }
 
-        if heroes.suffix(5).contains(where: { $0.id == hero.id }) {
+        if heroes.suffix(5).contains(where: { $0.id == heroItem.id }) {
             state = .loaded(heroes: heroes, isLoadingMore: true)
             Task {
                 do {
                     let container = try await interactor.fetchNextPage()
-                    let updatedHeroes = heroes + container.characters
-                    state = .loaded(heroes: updatedHeroes, isLoadingMore: false)
+                    allHeroes.append(contentsOf: container.characters)
+                    let newHeroesListUIModel = self.heroesListMapper.map(
+                        heroes: container.characters
+                    )
+                    let updatedHeroesListUIModel = heroes + newHeroesListUIModel
+                    state = .loaded(heroes: updatedHeroesListUIModel, isLoadingMore: false)
                 } catch PaginationError.noMorePages {
                     state = .loaded(heroes: heroes, isLoadingMore: false)
                 } catch {
@@ -53,5 +72,9 @@ class HeroesListViewModel: ObservableObject {
                 }
             }
         }
+    }
+
+    func model(for heroItem: HeroListItemUIModel) -> Hero? {
+        allHeroes.first(where: { $0.id == heroItem.id })
     }
 }

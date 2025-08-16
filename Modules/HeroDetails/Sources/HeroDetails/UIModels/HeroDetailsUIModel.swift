@@ -5,6 +5,7 @@
 //  Created by Omar Tarek Mansour Omar on 16/8/25.
 //
 import Foundation
+import DesignSystem
 
 struct HeroDetailsUIModel {
     var id: Int
@@ -16,6 +17,7 @@ struct HeroDetailsUIModel {
 }
 
 struct SectionUIModel {
+    let icon: SFIcon?
     let title: String
     let names: [String]
 }
