@@ -13,15 +13,17 @@ let package = Package(
             targets: ["HeroDetails"]),
     ],
     dependencies: [
-       // Local dependency on NetworkClient
-       .package(path: "../HeroesCore")
+       // Local dependencies
+       .package(path: "../HeroesCore"),
+       // External dependencies
+       .package(url: "https://github.com/onevcat/Kingfisher.git", from: "8.5.0")
    ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
         // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "HeroDetails",
-            dependencies: ["HeroesCore"]
+            dependencies: ["HeroesCore", "Kingfisher"]
         ),
         .testTarget(
             name: "HeroDetailsTests",

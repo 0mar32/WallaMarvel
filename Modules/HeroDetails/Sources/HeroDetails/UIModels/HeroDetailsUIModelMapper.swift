@@ -13,24 +13,23 @@ protocol HeroDetailsUIModelMapperProtocol {
 
 struct HeroDetailsUIModelMapper: HeroDetailsUIModelMapperProtocol {
     func map(hero: Hero) -> HeroDetailsUIModel {
-
         // chance to set localization also here
         let title = hero.name.isEmpty ? "Unknown" : hero.name
         let imageURL = url(
             thumbnail: hero.thumbnail,
-            size: .landscapeIncredible
+            size: .standardFantastic
         )
         let description = hero.description.isEmpty ? "No description available" : hero.description
-
+        let stories: SectionUIModel? = hero.stories.isEmpty ? nil : .init(title: "Stories", names: hero.stories.map(\.name))
+        let series: SectionUIModel? = hero.series.isEmpty ? nil : .init(title: "Series", names: hero.series.map(\.name))
         return HeroDetailsUIModel(
             id: hero.id,
             title: title,
             imageURL: imageURL,
             description: description,
-            storiesSection: .init(title: "Stories", names: hero.stories.map(\.name)),
-            seriesSection: .init(title: "Stories", names: hero.series.map(\.name))
+            storiesSection: stories,
+            seriesSection: series
         )
-
     }
 
     func url(thumbnail: Thumbnail, size: Thumbnail.ImageSize) -> URL? {

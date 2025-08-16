@@ -8,6 +8,7 @@ import SwiftUI
 import HeroesCore
 import SwiftUI
 import HeroesCore
+import Kingfisher
 
 // MARK: - Detail View
 struct HeroDetailView: View {
@@ -51,37 +52,33 @@ struct HeroDetailView: View {
         }
     }
 
-    // MARK: - Hero Image
     @ViewBuilder
     private func heroImage(url: URL?, geo: GeometryProxy) -> some View {
-        AsyncImage(url: url) { phase in
-            ZStack {
-                if let image = phase.image {
-                    image
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: geo.size.width, height: 300)
-                        .clipped()
-                } else if phase.error != nil {
-                    Image(systemName: "photo")
-                        .resizable()
-                        .scaledToFit()
-                        .frame(width: 100, height: 100)
-                        .foregroundColor(.gray)
-                } else {
-                    ProgressView()
-                        .frame(width: geo.size.width, height: 300)
-                }
+        KFImage(url)
+            .placeholder {
+                ProgressView()
+                    .frame(maxWidth: .infinity, maxHeight: 200) // temporary height while loading
             }
-        }
-        .frame(height: 300)
-        .overlay(
-            LinearGradient(
-                gradient: Gradient(colors: [Color.black.opacity(0.4), Color.clear]),
-                startPoint: .bottom,
-                endPoint: .top
+            .cancelOnDisappear(true)
+            .fade(duration: 0.25)
+            .resizable()
+            .aspectRatio(contentMode: .fit) // keep ratio, width defines height
+            .frame(maxWidth: .infinity)
+            .overlay(
+                LinearGradient(
+                    gradient: Gradient(colors: [Color.black.opacity(0.4), Color.clear]),
+                    startPoint: .bottom,
+                    endPoint: .top
+                )
             )
-        )
+            .background(
+                Image(systemName: "photo")
+                    .resizable()
+                    .scaledToFit()
+                    .frame(width: 100, height: 100)
+                    .foregroundColor(.gray)
+                    .opacity(url == nil ? 1 : 0) // fallback when no URL
+            )
     }
 
     // MARK: - Hero Info
@@ -98,6 +95,7 @@ struct HeroDetailView: View {
                 .foregroundColor(.secondary)
                 .transition(.opacity)
         }
+        .frame(maxWidth: .infinity, alignment: .leading)
         .padding(.horizontal)
         .animation(.easeInOut(duration: 0.3), value: description)
     }

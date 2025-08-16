@@ -6,30 +6,30 @@
 //
 import SwiftUI
 import HeroesCore
+import Kingfisher
 
 struct HeroRowView: View {
     let hero: Hero
 
     var body: some View {
         HStack(spacing: 16) {
-            AsyncImage(url: hero.thumbnail.url) { phase in
-                switch phase {
-                case .empty:
+            KFImage(hero.thumbnail.url)
+                .placeholder {
                     ProgressView()
                         .frame(width: 60, height: 60)
-                case .success(let image):
-                    image.resizable()
-                        .scaledToFill()
-                        .frame(width: 60, height: 60)
-                        .clipShape(Circle())
-                case .failure:
+                }
+                .cancelOnDisappear(true)
+                .fade(duration: 0.25)
+                .resizable()
+                .scaledToFill()
+                .frame(width: 60, height: 60)
+                .clipShape(Circle())
+                .background(
                     Image(systemName: "person.crop.circle.badge.exclamationmark")
                         .resizable()
                         .frame(width: 60, height: 60)
-                @unknown default:
-                    EmptyView()
-                }
-            }
+                        .opacity(hero.thumbnail.url == nil ? 1 : 0) // fallback if no URL
+                )
 
             Text(hero.name)
                 .font(.headline)
