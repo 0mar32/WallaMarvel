@@ -7,7 +7,7 @@
 import Foundation
 
 public struct Series: Sendable {
-    let name: String
+    public let name: String
 }
 
 extension SeriesItemDto {

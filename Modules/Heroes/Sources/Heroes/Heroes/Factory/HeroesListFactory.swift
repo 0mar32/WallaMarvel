@@ -28,9 +28,9 @@ final public class HeroesListFactory {
 
     /// Create a UIViewController wrapping the SwiftUI HeroesListView
     @MainActor
-    public func makeViewController() -> UIViewController {
+    public func makeViewController(onHeroSelected: @escaping (Hero) -> Void) -> UIViewController {
         let viewModel = HeroesListViewModel(interactor: dependencies.interactor)
-        let view = HeroesListView(viewModel: viewModel)
+        let view = HeroesListView(viewModel: viewModel, onHeroSelected: onHeroSelected)
         let hostingController = UIHostingController(rootView: view)
         return hostingController
     }

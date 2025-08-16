@@ -21,6 +21,8 @@ class HeroesListViewModel: ObservableObject {
     }
 
     func loadInitialHeroes() {
+        guard case .idle = state else { return }
+
         state = .loadingInitial
         Task {
             await interactor.reset()
