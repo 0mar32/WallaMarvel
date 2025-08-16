@@ -6,9 +6,8 @@
 //
 import SwiftUI
 import HeroesCore
-import SwiftUI
-import HeroesCore
 import Kingfisher
+import DesignSystem
 
 // MARK: - Detail View
 struct HeroDetailView: View {
@@ -35,10 +34,18 @@ struct HeroDetailView: View {
                             description: heroDetailsUIModel.description
                         )
                         if let stories = heroDetailsUIModel.storiesSection {
-                            AnimatedSectionView(title: stories.title, items: stories.names)
+                            AnimatedSectionView(
+                                title: stories.title,
+                                items: stories.names,
+                                icon: stories.icon
+                            )
                         }
                         if let series = heroDetailsUIModel.seriesSection {
-                            AnimatedSectionView(title: series.title, items: series.names)
+                            AnimatedSectionView(
+                                title: series.title,
+                                items: series.names,
+                                icon: series.icon
+                            )
                         }
                         Spacer(minLength: 32)
                     }

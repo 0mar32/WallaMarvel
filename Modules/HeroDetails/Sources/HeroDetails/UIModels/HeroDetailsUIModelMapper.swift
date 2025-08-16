@@ -15,13 +15,31 @@ struct HeroDetailsUIModelMapper: HeroDetailsUIModelMapperProtocol {
     func map(hero: Hero) -> HeroDetailsUIModel {
         // chance to set localization also here
         let title = hero.name.isEmpty ? "Unknown" : hero.name
+
         let imageURL = url(
             thumbnail: hero.thumbnail,
             size: .standardFantastic
         )
+
         let description = hero.description.isEmpty ? "No description available" : hero.description
-        let stories: SectionUIModel? = hero.stories.isEmpty ? nil : .init(title: "Stories", names: hero.stories.map(\.name))
-        let series: SectionUIModel? = hero.series.isEmpty ? nil : .init(title: "Series", names: hero.series.map(\.name))
+
+        let stories: SectionUIModel? = hero.stories.isEmpty
+        ? nil
+        : .init(
+            icon: .stories,
+            title: "Stories",
+            names: hero.stories.map {"• \($0.name)"
+            }
+        )
+
+        let series: SectionUIModel? = hero.series.isEmpty
+        ? nil
+        : .init(
+            icon: .series,
+            title: "Series",
+            names: hero.series.map {"• \($0.name)"
+            }
+        )
         return HeroDetailsUIModel(
             id: hero.id,
             title: title,
