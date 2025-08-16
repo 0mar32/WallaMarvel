@@ -17,7 +17,6 @@ struct HeroesListView: View {
             content
                 .navigationTitle("Heroes")
                 .onAppear {
-                    print("Omar32", viewModel.state)
                     viewModel.loadInitialHeroes()
                 }
         }

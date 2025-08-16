@@ -19,6 +19,7 @@
 		1D4B96EE2E4EBEC200505D4B /* NetworkClientConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 1D4B96ED2E4EBEC200505D4B /* NetworkClientConfig */; };
 		1D4B96F82E4EDA6F00505D4B /* Heroes in Frameworks */ = {isa = PBXBuildFile; productRef = 1D4B96F72E4EDA6F00505D4B /* Heroes */; };
 		1DD74A392E4FECEB0064A3A3 /* HeroDetails in Frameworks */ = {isa = PBXBuildFile; productRef = 1DD74A382E4FECEB0064A3A3 /* HeroDetails */; };
+		1DD74A3C2E501AAC0064A3A3 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 1DD74A3B2E501AAC0064A3A3 /* Kingfisher */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -64,6 +65,7 @@
 				1D158AC02E4EA4CA00C94127 /* HeroesCore in Frameworks */,
 				1D4B96F82E4EDA6F00505D4B /* Heroes in Frameworks */,
 				1D158AC52E4EA9C300C94127 /* NetworkClientConfig in Frameworks */,
+				1DD74A3C2E501AAC0064A3A3 /* Kingfisher in Frameworks */,
 				1D158AC32E4EA8FA00C94127 /* NetworkClientConfig in Frameworks */,
 				1DD74A392E4FECEB0064A3A3 /* HeroDetails in Frameworks */,
 				1D4B96EE2E4EBEC200505D4B /* NetworkClientConfig in Frameworks */,
@@ -172,6 +174,7 @@
 				1D4B96ED2E4EBEC200505D4B /* NetworkClientConfig */,
 				1D4B96F72E4EDA6F00505D4B /* Heroes */,
 				1DD74A382E4FECEB0064A3A3 /* HeroDetails */,
+				1DD74A3B2E501AAC0064A3A3 /* Kingfisher */,
 			);
 			productName = WallaMarvel;
 			productReference = 1D31F0242E4A8AD1002CF302 /* WallaMarvel.app */;
@@ -251,6 +254,7 @@
 			mainGroup = 1D31F01B2E4A8AD1002CF302;
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
+				1DD74A3A2E501AAC0064A3A3 /* XCRemoteSwiftPackageReference "Kingfisher" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 1D31F0252E4A8AD1002CF302 /* Products */;
@@ -624,6 +628,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		1DD74A3A2E501AAC0064A3A3 /* XCRemoteSwiftPackageReference "Kingfisher" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/onevcat/Kingfisher.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 8.5.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		1D158ABF2E4EA4CA00C94127 /* HeroesCore */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -652,6 +667,11 @@
 		1DD74A382E4FECEB0064A3A3 /* HeroDetails */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = HeroDetails;
+		};
+		1DD74A3B2E501AAC0064A3A3 /* Kingfisher */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 1DD74A3A2E501AAC0064A3A3 /* XCRemoteSwiftPackageReference "Kingfisher" */;
+			productName = Kingfisher;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};
