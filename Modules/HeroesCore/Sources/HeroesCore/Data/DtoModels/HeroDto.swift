@@ -8,7 +8,7 @@
 import Foundation
 
 struct HeroDto: Decodable {
-    let id: Int
+    let id: Int // change this to string
     let name: String
     let description: String
     let thumbnail: ThumbnailDto

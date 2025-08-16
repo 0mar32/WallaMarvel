@@ -3,6 +3,7 @@ import UIKit
 
 import Heroes
 import HeroesCore
+import HeroDetails
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -23,8 +24,16 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let factory = HeroesListFactory(dependencies: .init(interactor: interactor))
 
         // Create root VC
-        let rootVC = factory.makeViewController()
-        window.rootViewController = rootVC
+        let rootNavigationController = UINavigationController()
+        let rootVC = factory.makeViewController { hero in
+            rootNavigationController
+                .pushViewController(
+                    HeroesDetailsFactory().makeViewController(hero: hero),
+                    animated: true
+                )
+        }
+        rootNavigationController.viewControllers = [rootVC]
+        window.rootViewController = rootNavigationController
         window.makeKeyAndVisible()
 
         self.window = window

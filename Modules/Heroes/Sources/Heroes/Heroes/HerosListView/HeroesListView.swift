@@ -3,16 +3,21 @@ import HeroesCore
 
 struct HeroesListView: View {
     @StateObject private var viewModel: HeroesListViewModel
+    let onHeroSelected: (Hero) -> Void
 
-    init(viewModel: HeroesListViewModel) {
+    init(viewModel: HeroesListViewModel,
+         onHeroSelected: @escaping (Hero) -> Void
+    ) {
         _viewModel = StateObject(wrappedValue: viewModel)
+        self.onHeroSelected = onHeroSelected
     }
 
     var body: some View {
         NavigationView {
             content
                 .navigationTitle("Heroes")
-                .task {
+                .onAppear {
+                    print("Omar32", viewModel.state)
                     viewModel.loadInitialHeroes()
                 }
         }
@@ -44,20 +49,25 @@ struct HeroesListView: View {
     private func heroList(_ heroes: [Hero], showFooter: Bool) -> some View {
         List {
             ForEach(heroes, id: \.id) { hero in
-                HeroRowView(hero: hero)
-                    .onAppear {
-                        viewModel.loadMoreHeroesIfNeeded(currentHero: hero)
-                    }
+                Button {
+                    onHeroSelected(hero)
+                } label: {
+                    HeroRowView(hero: hero)
+                        .foregroundColor(.primary)
+                        .frame(maxWidth: .infinity, alignment: .leading)
+                }
+                .onAppear {
+                    viewModel.loadMoreHeroesIfNeeded(currentHero: hero)
+                }
             }
 
             if showFooter {
                 HStack {
                     Spacer()
                     ProgressView()
-                        .frame(height: 44)
                     Spacer()
                 }
-                .id(UUID())
+                .id(UUID()) // ensure spinner re-renders/animates
             }
         }
     }

@@ -7,8 +7,8 @@
 import Foundation
 
 public struct Story: Sendable {
-    let name: String
-    let type: String
+    public let name: String
+    public let type: String
 }
 
 extension StoryItemDto {
