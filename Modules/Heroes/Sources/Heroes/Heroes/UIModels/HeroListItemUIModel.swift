@@ -6,7 +6,7 @@
 //
 import Foundation
 
-struct HeroListItemUIModel {
+struct HeroListItemUIModel: Identifiable, Hashable {
     let id: Int
     let imageURL: URL?
     let name: String

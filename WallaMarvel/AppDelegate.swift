@@ -20,7 +20,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         // Setup dependencies for the HeroesListFactory
         let repository = HeroesRepository()
-        let interactor = HeroesPaginationInteractor(repository: repository)
+        let interactor = HeroesPaginationInteractor(
+            repository: repository
+        )
         let factory = HeroesListFactory(dependencies: .init(interactor: interactor))
 
         // Create root VC
