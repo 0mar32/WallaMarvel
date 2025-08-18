@@ -22,6 +22,7 @@ class HeroesListViewModel: ObservableObject {
     private let heroesListMapper: HeroesListUIModelMapperProtocol
 
     private var allHeroes: [Hero] = []
+    private var subscriptionTask: Task<Void, Never>? = nil
 
     init(
         interactor: HeroesPaginationInteractorProtocol,
@@ -29,6 +30,23 @@ class HeroesListViewModel: ObservableObject {
     ) {
         self.interactor = interactor
         self.heroesListMapper = heroesListMapper
+
+        subscribeToHeroesCache()
+    }
+
+    private func subscribeToHeroesCache() {
+        subscriptionTask = Task { [weak self] in
+            guard let self = self else { return }
+            for await container in await self.interactor.heroesCachePublisher {
+                let heroesUIModel = self.heroesListMapper.map(heroes: container.characters)
+                self.allHeroes = container.characters
+                if self.allHeroes.isEmpty {
+                    self.state = .idle
+                } else {
+                    self.state = .loaded(heroes: heroesUIModel, isLoadingMore: false)
+                }
+            }
+        }
     }
 
     func loadInitialHeroes() {
@@ -38,12 +56,17 @@ class HeroesListViewModel: ObservableObject {
         Task {
             await interactor.reset()
             do {
-                let container = try await interactor.fetchNextPage()
-                allHeroes.append(contentsOf: container.characters)
+                let container = try await interactor.refresh()
+                allHeroes = container.characters
                 let heroesListUIModel = self.heroesListMapper.map(
                     heroes: container.characters
                 )
-                state = .loaded(heroes: heroesListUIModel, isLoadingMore: false)
+                // Animate insertion of new items
+                await MainActor.run {
+                    withAnimation(.easeInOut) {
+                        state = .loaded(heroes: heroesListUIModel, isLoadingMore: false)
+                    }
+                }
             } catch {
                 state = .error("Error: \(error.localizedDescription)", [])
             }
@@ -64,7 +87,11 @@ class HeroesListViewModel: ObservableObject {
                         heroes: container.characters
                     )
                     let updatedHeroesListUIModel = heroes + newHeroesListUIModel
-                    state = .loaded(heroes: updatedHeroesListUIModel, isLoadingMore: false)
+                    await MainActor.run {
+                        withAnimation(.easeInOut) {
+                            state = .loaded(heroes: updatedHeroesListUIModel, isLoadingMore: false)
+                        }
+                    }
                 } catch PaginationError.noMorePages {
                     state = .loaded(heroes: heroes, isLoadingMore: false)
                 } catch {
