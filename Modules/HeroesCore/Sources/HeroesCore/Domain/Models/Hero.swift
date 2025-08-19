@@ -7,7 +7,7 @@
 import Foundation
 import CoreData
 
-public struct Hero: Sendable {
+public struct Hero: Equatable, Sendable {
     public let id: Int
     public let name: String
     public let description: String

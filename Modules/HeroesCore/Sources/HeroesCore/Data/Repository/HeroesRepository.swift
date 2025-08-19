@@ -45,50 +45,51 @@ public class HeroesRepository: HeroesRepositoryProtocol, @unchecked Sendable {
             let remoteContainer = try await fetchRemotePage(limit: limit, offset: offset)
             try storageService.storeHeroes(remoteContainer.characters, offset: offset)
             return remoteContainer
-        } else {
-            if offset == 0 {
-                // Step 1: yield cached
-                let cachedContainer = HeroesContainer(
-                    count: cachedHeroes.count,
-                    limit: cachedHeroes.count,
-                    offset: 0,
-                    total: nil,
-                    characters: cachedHeroes
-                )
-                updateContinuation.yield(cachedContainer)
+    
+        } else if offset == 0 {
+            // Step 1: yield cached
+            let cachedContainer = HeroesContainer(
+                count: cachedHeroes.count,
+                limit: cachedHeroes.count,
+                offset: 0,
+                total: nil,
+                characters: cachedHeroes
+            )
+            updateContinuation.yield(cachedContainer)
 
-                // Step 2: refresh from remote in pages (max 100 per call)
-                var allCharacters: [Hero] = []
-                var currentOffset = 0
-                let maxPageSize = 100
-                var newTotal: Int? = nil
+            // Step 2: refresh from remote in pages (max 100 per call)
+            var allCharacters: [Hero] = []
+            var currentOffset = 0
+            let maxPageSize = 100
+            var newTotal: Int? = nil
 
-                while currentOffset < cachedHeroes.count {
-                    let fetchLimit = min(maxPageSize, cachedHeroes.count - currentOffset)
-                    let page = try await fetchRemotePage(limit: fetchLimit, offset: currentOffset)
-                    allCharacters.append(contentsOf: page.characters)
-                    newTotal = page.total
-                    // Store each page incrementally
-                    try storageService.storeHeroes(page.characters, offset: currentOffset)
+            while currentOffset < cachedHeroes.count {
+                let fetchLimit = min(maxPageSize, cachedHeroes.count - currentOffset)
+                let page = try await fetchRemotePage(limit: fetchLimit, offset: currentOffset)
+                allCharacters.append(contentsOf: page.characters)
+                newTotal = page.total
+                // Store each page incrementally
+                try storageService.storeHeroes(page.characters, offset: currentOffset)
 
-                    currentOffset += fetchLimit
-                }
-
-                let refreshedRemoteContainer = HeroesContainer(
-                    count: allCharacters.count,
-                    limit: allCharacters.count,
-                    offset: 0,
-                    total: newTotal,
-                    characters: allCharacters
-                )
-
-                return refreshedRemoteContainer
-            } else {
-                // Pagination (just fetch one page)
-                let remoteContainer = try await fetchRemotePage(limit: limit, offset: offset)
-                try storageService.storeHeroes(remoteContainer.characters, offset: offset)
-                return remoteContainer
+                currentOffset += fetchLimit
             }
+
+            let refreshedRemoteContainer = HeroesContainer(
+                count: allCharacters.count,
+                limit: allCharacters.count,
+                offset: 0,
+                total: newTotal,
+                characters: allCharacters
+            )
+
+            return refreshedRemoteContainer
+
+        } else {
+            // Pagination (just fetch one page)
+            let remoteContainer = try await fetchRemotePage(limit: limit, offset: offset)
+            try storageService.storeHeroes(remoteContainer.characters, offset: offset)
+
+            return remoteContainer
         }
     }
 
@@ -114,8 +115,10 @@ extension HeroesError {
     static func map(_ error: Error) -> HeroesError {
         if let networkError = error as? NetworkError {
             switch networkError {
-            case .noInternet: return .offline
-            default: return .generic
+            case .noInternet:
+                return .offline
+            default:
+                return .generic
             }
         } else {
             return .generic
