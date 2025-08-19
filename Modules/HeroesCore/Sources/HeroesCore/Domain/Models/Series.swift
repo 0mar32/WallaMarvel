@@ -7,7 +7,7 @@
 import Foundation
 import CoreData
 
-public struct Series: Sendable {
+public struct Series: Equatable, Sendable {
     public let name: String
 }
 

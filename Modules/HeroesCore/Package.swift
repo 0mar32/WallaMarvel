@@ -11,11 +11,16 @@ let package = Package(
         .library(
             name: "HeroesCore",
             targets: ["HeroesCore"]),
+        .library(
+            name: "HeroesCoreTestingMocks",
+            targets: ["HeroesCoreTestingMocks"]
+        ),
     ],
     dependencies: [
         // Local dependency on NetworkClient
         .package(path: "../NetworkClient"),
-        .package(path: "../NetworkClientConfig")
+        .package(path: "../NetworkClientConfig"),
+        .package(path: "../UnitTestingUtils")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -23,13 +28,22 @@ let package = Package(
         .target(
             name: "HeroesCore",
             dependencies: [
-                "NetworkClient", // This is the *product name* from NetworkClient’s Package.swift
+                "NetworkClient",
                 "NetworkClientConfig"
             ]
         ),
+        .target(
+            name: "HeroesCoreTestingMocks",
+            dependencies: ["HeroesCore"],
+            path: "HeroesCoreTestingMocks"
+        ),
         .testTarget(
             name: "HeroesCoreTests",
-            dependencies: ["HeroesCore"]
+            dependencies: [
+                "HeroesCore",
+                "HeroesCoreTestingMocks",
+                "UnitTestingUtils"
+            ]
         ),
     ]
 )

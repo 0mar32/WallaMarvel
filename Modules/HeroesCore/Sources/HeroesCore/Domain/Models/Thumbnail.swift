@@ -6,7 +6,7 @@
 //
 import Foundation
 
-public struct Thumbnail: Sendable {
+public struct Thumbnail: Equatable, Sendable {
     public let path: String
     public let `extension`: String
 
