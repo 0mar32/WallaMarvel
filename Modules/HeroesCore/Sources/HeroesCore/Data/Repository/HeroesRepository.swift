@@ -106,7 +106,7 @@ public class HeroesRepository: HeroesRepositoryProtocol, @unchecked Sendable {
 }
 
 // MARK: - HeroesError
-enum HeroesError: Error {
+public enum HeroesError: Error {
     case offline
     case generic
 }
