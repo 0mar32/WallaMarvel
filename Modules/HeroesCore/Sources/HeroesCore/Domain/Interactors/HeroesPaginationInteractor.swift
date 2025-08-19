@@ -22,6 +22,9 @@ public actor HeroesPaginationInteractor: HeroesPaginationInteractorProtocol {
     private var isRefreshing = false
     private var pendingPagination: CheckedContinuation<HeroesContainer, Error>?
 
+    private var cacheSubscriptionTask: Task<Void, Never>?
+    private var didStartSubscription = false
+
     public var heroesCachePublisher: AsyncStream<HeroesContainer> {
         repository.heroesPublisher
     }
@@ -29,6 +32,21 @@ public actor HeroesPaginationInteractor: HeroesPaginationInteractorProtocol {
     public init(repository: HeroesRepositoryProtocol, limit: Int = 20) {
         self.repository = repository
         self.limit = limit
+    }
+
+    deinit {
+        cacheSubscriptionTask?.cancel()
+    }
+
+    private func ensureCacheSubscriptionStarted() {
+        guard !didStartSubscription else { return }
+        didStartSubscription = true
+        cacheSubscriptionTask = Task { [weak self] in
+            guard let self else { return }
+            for await container in repository.heroesPublisher {
+                await self.applyCacheSnapshot(container)
+            }
+        }
     }
 
     public func reset() {
@@ -43,8 +61,9 @@ public actor HeroesPaginationInteractor: HeroesPaginationInteractorProtocol {
         return true
     }
 
-    /// First call to update cache + start fresh
     public func refresh() async throws -> HeroesContainer {
+        ensureCacheSubscriptionStarted()
+
         guard !isRefreshing else {
             throw PaginationError.refreshInProgress
         }
@@ -57,7 +76,6 @@ public actor HeroesPaginationInteractor: HeroesPaginationInteractorProtocol {
         offset = result.count
         total = result.total
 
-        // If a pagination request was queued during refresh, run it now
         if let continuation = pendingPagination {
             pendingPagination = nil
             Task {
@@ -74,11 +92,12 @@ public actor HeroesPaginationInteractor: HeroesPaginationInteractorProtocol {
     }
 
     public func fetchNextPage() async throws -> HeroesContainer {
+        ensureCacheSubscriptionStarted()
+
         guard hasMorePages else {
             throw PaginationError.noMorePages
         }
 
-        // If refresh is still in progress, queue this pagination request
         if isRefreshing {
             return try await withCheckedThrowingContinuation { continuation in
                 pendingPagination = continuation
@@ -91,5 +110,15 @@ public actor HeroesPaginationInteractor: HeroesPaginationInteractorProtocol {
         total = result.total
 
         return result
+    }
+
+    private func applyCacheSnapshot(_ container: HeroesContainer) {
+        guard !isRefreshing else { return }
+        if container.count > offset {
+            offset = container.count
+        }
+        if total == nil {
+            total = container.total
+        }
     }
 }

@@ -5,14 +5,23 @@ import HeroesCore
 
 @MainActor
 class HeroesListViewModel: ObservableObject {
-    enum ViewState {
+    enum ViewState: Equatable {
         case idle
         case loadingInitial(message: String)
-        case loaded(heroes: [HeroListItemUIModel], isLoadingMore: Bool)
-        case error(String, [HeroListItemUIModel])
+        case loaded(heroes: [HeroListItemUIModel], isLoadingMore: Bool, paginationError: Bool = false)
+        case error(ErrorMessageUIModel, heroes: [HeroListItemUIModel])
 
         var viewTitle: String {
             return "Heroes"
+        }
+
+        var heroes: [HeroListItemUIModel] {
+            switch self {
+            case let .loaded(heroes, _ , _):
+                return heroes
+            case .error, .idle, .loadingInitial:
+                return []
+            }
         }
     }
 
@@ -43,7 +52,7 @@ class HeroesListViewModel: ObservableObject {
                 if self.allHeroes.isEmpty {
                     self.state = .idle
                 } else {
-                    self.state = .loaded(heroes: heroesUIModel, isLoadingMore: false)
+                    self.state = .loaded(heroes: heroesUIModel, isLoadingMore: false, paginationError: false)
                 }
             }
         }
@@ -64,39 +73,69 @@ class HeroesListViewModel: ObservableObject {
                 // Animate insertion of new items
                 await MainActor.run {
                     withAnimation(.easeInOut) {
-                        state = .loaded(heroes: heroesListUIModel, isLoadingMore: false)
+                        state = .loaded(heroes: heroesListUIModel, isLoadingMore: false, paginationError: false)
                     }
                 }
+            } catch HeroesError.offline {
+                if state.heroes.isEmpty {
+                    state = .loaded(heroes: [], isLoadingMore: false, paginationError: true)
+                }
             } catch {
-                state = .error("Error: \(error.localizedDescription)", [])
+                state = .error(
+                    .init(
+                        title: "Error",
+                        text: "\(error.localizedDescription)"),
+                    heroes: state.heroes
+                )
             }
         }
     }
 
     func loadMoreHeroesIfNeeded(currentHero heroItem: HeroListItemUIModel) {
-        guard case let .loaded(heroes, isLoadingMore) = state else { return }
+        guard case let .loaded(heroes, isLoadingMore, _) = state else { return }
         guard !heroes.isEmpty && !isLoadingMore else { return }
 
         if heroes.suffix(5).contains(where: { $0.id == heroItem.id }) {
-            state = .loaded(heroes: heroes, isLoadingMore: true)
-            Task {
-                do {
-                    let container = try await interactor.fetchNextPage()
-                    allHeroes.append(contentsOf: container.characters)
-                    let newHeroesListUIModel = self.heroesListMapper.map(
-                        heroes: container.characters
-                    )
-                    let updatedHeroesListUIModel = heroes + newHeroesListUIModel
-                    await MainActor.run {
-                        withAnimation(.easeInOut) {
-                            state = .loaded(heroes: updatedHeroesListUIModel, isLoadingMore: false)
-                        }
+            state = .loaded(heroes: heroes, isLoadingMore: true, paginationError: false)
+            requestNextPageAndMerge(using: heroes)
+        }
+    }
+
+    func retryPagination() {
+        guard case let .loaded(heroes, _, _) = state else { return }
+        state = .loaded(heroes: heroes, isLoadingMore: true, paginationError: false)
+        requestNextPageAndMerge(using: heroes)
+    }
+
+    private func requestNextPageAndMerge(using currentHeroes: [HeroListItemUIModel]) {
+        Task {
+            do {
+                let container = try await interactor.fetchNextPage()
+                allHeroes.append(contentsOf: container.characters)
+
+                let newHeroesListUIModel = self.heroesListMapper.map(
+                    heroes: container.characters
+                )
+                let updatedHeroesListUIModel = currentHeroes + newHeroesListUIModel
+
+                await MainActor.run {
+                    withAnimation(.easeInOut) {
+                        state = .loaded(
+                            heroes: updatedHeroesListUIModel,
+                            isLoadingMore: false,
+                            paginationError: false
+                        )
                     }
-                } catch PaginationError.noMorePages {
-                    state = .loaded(heroes: heroes, isLoadingMore: false)
-                } catch {
-                    state = .error(error.localizedDescription, heroes)
                 }
+            } catch PaginationError.noMorePages {
+                state = .loaded(heroes: currentHeroes, isLoadingMore: false, paginationError: false)
+            } catch HeroesError.offline {
+                state = .loaded(heroes: currentHeroes, isLoadingMore: false, paginationError: true)
+            } catch {
+                state = .error(
+                    .init(title: "Error", text: "\(error.localizedDescription)"),
+                    heroes: state.heroes
+                )
             }
         }
     }
