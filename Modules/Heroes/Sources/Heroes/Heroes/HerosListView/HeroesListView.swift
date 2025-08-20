@@ -60,7 +60,7 @@ struct HeroesListView: View {
                 .fixedSize()
         } else {
             List {
-                ForEach(heroes, id: \.id) { hero in
+                ForEach(Array(heroes.enumerated()), id: \.element.id) { index, hero in
                     Button {
                         guard let hero = viewModel.model(for: hero) else { return }
                         onHeroSelected(hero)
@@ -71,6 +71,7 @@ struct HeroesListView: View {
                             style: .highlighted(borderColor: Colors.Primary.lightBlue)
                         )
                     }
+                    .fadeSlideIn(index: index)
                     .onAppear {
                         Task { await viewModel.loadMoreHeroesIfNeeded(currentHero: hero) }
                     }
