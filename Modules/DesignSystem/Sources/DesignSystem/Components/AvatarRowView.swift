@@ -9,9 +9,6 @@ import SwiftUI
 import Kingfisher
 import HeroesCore
 
-import SwiftUI
-import Kingfisher
-
 public struct AvatarRowView: View {
     public enum Style {
         case normal
@@ -36,6 +33,13 @@ public struct AvatarRowView: View {
                     ProgressView()
                         .frame(width: Sizes.Avatar.medium, height: Sizes.Avatar.medium)
                 }
+                .onFailureView {
+                    Image(systemName: SFIcon.noPersonImage.systemName)
+                        .resizable()
+                        .scaledToFit()
+                        .frame(width: Sizes.Avatar.medium, height: Sizes.Avatar.medium)
+                        .foregroundColor(Color(Colors.Text.placeholder))
+                }
                 .cancelOnDisappear(true)
                 .fade(duration: AnimationDuration.fast)
                 .resizable()
@@ -45,14 +49,6 @@ public struct AvatarRowView: View {
                 .overlay(
                     Circle()
                         .stroke(borderColor, lineWidth: borderWidth)
-                )
-                .background(
-                    Image(systemName: "person.crop.circle.badge.exclamationmark")
-                        .resizable()
-                        .scaledToFill()
-                        .frame(width: Sizes.Avatar.medium, height: Sizes.Avatar.medium)
-                        .foregroundColor(Color(Colors.Text.placeholder))
-                        .opacity(imageURL == nil ? 1 : 0)
                 )
 
             Text(title)

@@ -34,14 +34,14 @@ struct HeroDetailView: View {
                             description: heroDetailsUIModel.description
                         )
                         if let stories = heroDetailsUIModel.storiesSection {
-                            AnimatedSectionView(
+                            InfoSectionView(
                                 title: stories.title,
                                 items: stories.names,
                                 icon: stories.icon
                             )
                         }
                         if let series = heroDetailsUIModel.seriesSection {
-                            AnimatedSectionView(
+                            InfoSectionView(
                                 title: series.title,
                                 items: series.names,
                                 icon: series.icon
