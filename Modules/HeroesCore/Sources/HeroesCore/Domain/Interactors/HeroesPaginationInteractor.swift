@@ -76,6 +76,8 @@ public actor HeroesPaginationInteractor: HeroesPaginationInteractorProtocol {
         offset = result.count
         total = result.total
 
+        // to handle the case when user open the app -> cached data displayed -> user scroll down to paginate
+        // we should pend the pagination request until the first refresh for the initial data happens
         if let continuation = pendingPagination {
             pendingPagination = nil
             Task {
