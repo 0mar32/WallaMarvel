@@ -20,7 +20,7 @@ struct HeroesListView: View {
             content
                 .navigationTitle(viewModel.state.viewTitle)
                 .onAppear {
-                    viewModel.loadInitialHeroes()
+                    Task { await viewModel.loadInitialHeroes() }
                 }
                 .onChange(of: viewModel.state) { newState in
                     if case let .error(message, _) = newState { errorAlert = message }
@@ -72,7 +72,7 @@ struct HeroesListView: View {
                         )
                     }
                     .onAppear {
-                        viewModel.loadMoreHeroesIfNeeded(currentHero: hero)
+                        Task { await viewModel.loadMoreHeroesIfNeeded(currentHero: hero) }
                     }
                 }
 
@@ -102,7 +102,7 @@ struct HeroesListView: View {
             icon: .noConnection,
             buttonTitle: "Retry"
         ) {
-            viewModel.retryPagination()
+            Task { await viewModel.retryPagination() }
         }
     }
 
@@ -113,7 +113,7 @@ struct HeroesListView: View {
             icon: .noConnection,
             buttonTitle: "Retry"
         ) {
-            viewModel.loadInitialHeroes()
+            Task { await viewModel.loadInitialHeroes() }
         }
     }
 }
