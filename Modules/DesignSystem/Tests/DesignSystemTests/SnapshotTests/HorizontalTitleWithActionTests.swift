@@ -5,10 +5,9 @@
 //  Created by Omar Tarek Mansour Omar on 20/8/25.
 //
 
-
 import XCTest
-@testable import DesignSystem
 import SwiftUI
+@testable import DesignSystem
 
 final class HorizontalTitleWithActionTests: XCTestCase {
 

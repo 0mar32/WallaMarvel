@@ -6,8 +6,8 @@
 //
 
 import XCTest
-@testable import DesignSystem
 import SwiftUI
+@testable import DesignSystem
 
 final class InfoSectionViewTests: XCTestCase {
 

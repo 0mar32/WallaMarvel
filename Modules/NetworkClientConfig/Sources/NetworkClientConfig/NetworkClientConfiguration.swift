@@ -5,9 +5,10 @@ public extension DefaultNetworkClient {
     static let shared: DefaultNetworkClient = .init(
         baseURL: URL(string: "https://gateway.marvel.com:443")!,
         middlewares: [
+            // TODO: should be securely stored
             NetworkAPIKeysMiddleware(
-                privateApiKey: "40e44718ecd56f7ca4c88f0f1551793ff2a14f2b",
-                publicApiKey: "7ff3eedb58d4a88f4b8c0b59edb1ad37"
+                privateApiKey: "259034404561768ff21da45183689efe33febbd3",
+                publicApiKey: "c40723d058e53912bf7f583907947b11"
             ),
             LoggerMiddleware()
         ]
