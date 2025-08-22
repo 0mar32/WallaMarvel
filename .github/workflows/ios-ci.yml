@@ -14,11 +14,11 @@ env:
   APP_SCHEME: WallaMarvel                      # scheme that contains UI tests
   DESTINATION: platform=iOS Simulator,OS=latest,name=iPhone 15
   CONFIGURATION: Debug
-  XCODE_VERSION: '16.2'
+  XCODE_VERSION: '16.4'
 
 jobs:
   build-and-test:
-    runs-on: macos-14
+    runs-on: macos-15
 
     steps:
       - name: Check out
