@@ -73,17 +73,18 @@ jobs:
               build
           fi
 
-      - name: Discover & run Module tests (SPM under /Modules)
+            - name: Discover & run Module tests (SPM under /Modules)
         id: module-tests
         shell: bash
         run: |
           set -eo pipefail
 
+          # Runs xcodebuild test for a given *scheme name*.
           run_tests_for_scheme () {
             local scheme="$1"
             local bundle="Modules-${scheme}.xcresult"
             echo "→ Running tests for scheme: ${scheme}"
-            if [ -n "${WORKSPACE}" ]; then
+            if [ -n "${WORKSPACE:-}" ]; then
               xcodebuild test \
                 -workspace "${WORKSPACE}" \
                 -scheme "${scheme}" \
@@ -102,39 +103,59 @@ jobs:
             fi
           }
 
-          # Strategy:
-          # 1) If .ci/module-schemes.txt exists, use it (one scheme per line).
-          # 2) Else, auto-discover from /Modules/*/Package.swift (only if package has a test target).
+          # Chooses a testable scheme for a given *package name*.
+          run_tests_for_package () {
+            local pkg="$1"
+            local candidates=("${pkg}-Package" "${pkg}")
+            local chosen=""
 
-          mkdir -p .ci
-          declare -a SCHEMES=()
+            for s in "${candidates[@]}"; do
+              if [ -n "${WORKSPACE:-}" ]; then
+                if xcodebuild -workspace "${WORKSPACE}" -scheme "${s}" -showBuildSettings >/dev/null 2>&1; then
+                  chosen="$s"; break
+                fi
+              else
+                if xcodebuild -project "${PROJECT}" -scheme "${s}" -showBuildSettings >/dev/null 2>&1; then
+                  chosen="$s"; break
+                fi
+              fi
+            done
 
+            if [ -z "$chosen" ]; then
+              echo "No scheme found for package '${pkg}' (skipping)"; return 0
+            fi
+
+            run_tests_for_scheme "$chosen"
+          }
+
+          # Get package names:
+          # 1) If .ci/module-schemes.txt exists, use those lines as *package names* (not scheme names).
+          # 2) Else, auto-discover by reading Modules/*/Package.swift and taking the package "name".
+          declare -a PACKAGES=()
           if [ -f .ci/module-schemes.txt ]; then
-            echo "Using explicit module schemes from .ci/module-schemes.txt"
             while IFS= read -r line; do
               line="$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
               [ -z "$line" ] && continue
-              SCHEMES+=("$line")
+              PACKAGES+=("$line")
             done < .ci/module-schemes.txt
           else
-            echo "Auto-discovering module schemes from /Modules/*/Package.swift"
             shopt -s nullglob
-            for pkg in Modules/*/Package.swift; do
-              dir="$(dirname "$pkg")"
+            for pkgfile in Modules/*/Package.swift; do
+              dir="$(dirname "$pkgfile")"
               json="$(swift package --package-path "$dir" dump-package)"
               name="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d["name"])')"
               has_tests="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(any(t.get("type")=="test" for t in d.get("targets",[])))')"
               if [ "$has_tests" = "True" ] || [ "$has_tests" = "true" ]; then
-                SCHEMES+=("$name")
+                PACKAGES+=("$name")
               fi
             done
             shopt -u nullglob
           fi
 
-          # De-dupe and run
-          printf "%s\n" "${SCHEMES[@]}" | awk '{$1=$1};1' | sort -u | while read -r scheme; do
-            [ -z "$scheme" ] && continue
-            run_tests_for_scheme "$scheme"
+          # De-dupe package names and run their tests
+          printf "%s\n" "${PACKAGES[@]}" | awk '{$1=$1};1' | sort -u | while read -r pkg; do
+            [ -z "$pkg" ] && continue
+            run_tests_for_package "$pkg"
           done
 
       - name: Run UI tests (app scheme)
