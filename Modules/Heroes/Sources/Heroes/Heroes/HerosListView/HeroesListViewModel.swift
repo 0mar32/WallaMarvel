@@ -1,6 +1,5 @@
 import SwiftUI
 import Combine
-
 import HeroesCore
 
 @MainActor

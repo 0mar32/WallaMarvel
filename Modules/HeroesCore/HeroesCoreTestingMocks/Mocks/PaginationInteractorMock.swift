@@ -4,6 +4,7 @@
 //
 //  Created by Omar Tarek Mansour Omar on 20/8/25.
 //
+
 @testable import HeroesCore
 
 final class PaginationInteractorMock: HeroesPaginationInteractorProtocol, @unchecked Sendable {
