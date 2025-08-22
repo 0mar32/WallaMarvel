@@ -10,7 +10,7 @@ import SwiftUI
 import UIKit
 import HeroesCore
 
-// 1 2 3 4
+// 1 2 3 4 5
 final public class HeroesListFactory {
 
     public struct Dependencies {
