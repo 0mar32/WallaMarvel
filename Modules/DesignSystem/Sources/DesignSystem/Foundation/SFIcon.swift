@@ -12,6 +12,7 @@ public enum SFIcon: String {
     case general = "circle.grid.2x2.fill"
     case noConnection = "wifi.slash"
     case noPersonImage = "person.crop.circle.badge.exclamationmark"
+    case photo = "photo"
 
     public var systemName: String { rawValue }
 }

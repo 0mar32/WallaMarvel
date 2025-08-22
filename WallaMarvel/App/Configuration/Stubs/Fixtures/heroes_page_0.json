@@ -1,0 +1,358 @@
+{
+  "data": {
+    "count": 20,
+    "limit": 20,
+    "offset": 0,
+    "total": 40,
+    "results": [
+      {
+        "id": 1011334,
+        "name": "3-D Man Omar",
+        "description": "An early Avenger with enhanced strength and agility.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1011334", "extension": "jpg" },
+        "series": {
+          "available": 2,
+          "items": [
+            { "name": "Avengers (1963)" },
+            { "name": "Marvel Masterworks (2002)" }
+          ]
+        },
+        "stories": {
+          "available": 2,
+          "items": [
+            { "name": "Origin of 3-D Man", "type": "cover" },
+            { "name": "First Mission", "type": "interiorStory" }
+          ]
+        }
+      },
+      {
+        "id": 1017100,
+        "name": "A-Bomb (HAS)",
+        "description": "Rick Jones transformed into a blue, armored powerhouse.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1017100", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Hulk (2008)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Gamma Awakening", "type": "interiorStory" }
+          ]
+        }
+      },
+      {
+        "id": 1009144,
+        "name": "A.I.M.",
+        "description": "A collective of brilliant scientists and their robot creations.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009144", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Captain America (1968)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Techno-Terror", "type": "cover" }
+          ]
+        }
+      },
+      {
+        "id": 1010699,
+        "name": "Aaron Stack",
+        "description": "Machine Man with attitude.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1010699", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Nextwave (2006)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "HELMet Protocol", "type": "interiorStory" }
+          ]
+        }
+      },
+      {
+        "id": 1009146,
+        "name": "Abomination (Emil Blonsky)",
+        "description": "A gamma-born enemy of the Hulk.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009146", "extension": "jpg" },
+        "series": {
+          "available": 2,
+          "items": [
+            { "name": "Incredible Hulk (1962)" },
+            { "name": "She-Hulk (2005)" }
+          ]
+        },
+        "stories": {
+          "available": 2,
+          "items": [
+            { "name": "Monster Unleashed", "type": "cover" },
+            { "name": "Rage of Blonsky", "type": "interiorStory" }
+          ]
+        }
+      },
+      {
+        "id": 1016823,
+        "name": "Abomination (Ultimate)",
+        "description": "Ultimate universe variant of the Abomination.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1016823", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Ultimates (2002)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Ultimate Clash", "type": "interiorStory" }
+          ]
+        }
+      },
+      {
+        "id": 1009148,
+        "name": "Absorbing Man",
+        "description": "Can become anything he touches.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009148", "extension": "jpg" },
+        "series": {
+          "available": 2,
+          "items": [
+            { "name": "Thor (1966)" },
+            { "name": "Daredevil (1964)" }
+          ]
+        },
+        "stories": {
+          "available": 2,
+          "items": [
+            { "name": "Stone and Steel", "type": "cover" },
+            { "name": "Hammerfall", "type": "interiorStory" }
+          ]
+        }
+      },
+      {
+        "id": 1010903,
+        "name": "Abyss",
+        "description": "Mysterious mutant with a dimensional twist.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1010903", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "X-Men (1991)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Into the Void", "type": "interiorStory" }
+          ]
+        }
+      },
+      {
+        "id": 1009149,
+        "name": "Agent Brand",
+        "description": "Leader of S.W.O.R.D. with alien heritage.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009149", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Astonishing X-Men (2004)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Peak Authority", "type": "interiorStory" }
+          ]
+        }
+      },
+      {
+        "id": 1009150,
+        "name": "Agent X (Nijo)",
+        "description": "Mercenary with a mysterious past.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009150", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Deadpool (1997)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Enter Nijo", "type": "interiorStory" }
+          ]
+        }
+      },
+      {
+        "id": 1009151,
+        "name": "Agent Zero",
+        "description": "Weapon X operative with deadly precision.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009151", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Weapon X (2002)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Project Blackout", "type": "cover" }
+          ]
+        }
+      },
+      {
+        "id": 1009152,
+        "name": "Aginar",
+        "description": "Elder of the Universe.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009152", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Elders Saga (1985)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Collector’s Game", "type": "interiorStory" }
+          ]
+        }
+      },
+      {
+        "id": 1009153,
+        "name": "Air-Walker (Gabriel Lan)",
+        "description": "Cosmic herald and adventurer.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009153", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Fantastic Four (1961)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Rise of the Heralds", "type": "cover" }
+          ]
+        }
+      },
+      {
+        "id": 1009154,
+        "name": "Ajak",
+        "description": "Eternal warrior and strategist.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009154", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Eternals (2006)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Celestial Strategy", "type": "interiorStory" }
+          ]
+        }
+      },
+      {
+        "id": 1009155,
+        "name": "Ajaxis",
+        "description": "Forgotten Olympian champion.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009155", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Olympians Saga (1984)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Trial of Champions", "type": "cover" }
+          ]
+        }
+      },
+      {
+        "id": 1009156,
+        "name": "Akemi",
+        "description": "Stealth assassin from Japan.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009156", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Wolverine (2003)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Silent Strike", "type": "interiorStory" }
+          ]
+        }
+      },
+      {
+        "id": 1009157,
+        "name": "Alain",
+        "description": "Expert pilot and tactician.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009157", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Alpha Flight (1983)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Flight Paths", "type": "cover" }
+          ]
+        }
+      },
+      {
+        "id": 1009158,
+        "name": "Albert",
+        "description": "Android duplicate of Wolverine.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009158", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Wolverine (1991)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Android’s Lament", "type": "interiorStory" }
+          ]
+        }
+      },
+      {
+        "id": 1009159,
+        "name": "Albion",
+        "description": "Dark sorcerer and conqueror.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009159", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [
+            { "name": "Excalibur (1988)" }
+          ]
+        },
+        "stories": {
+          "available": 1,
+          "items": [
+            { "name": "Merlin’s Betrayal", "type": "cover" }
+          ]
+        }
+      }
+    ]
+  }
+}

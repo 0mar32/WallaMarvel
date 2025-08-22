@@ -15,11 +15,20 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]? = nil
     ) -> Bool {
 
+        AppConfiguration.configureOnLaunch()
+
         // Create UIWindow manually
         let window = UIWindow(frame: UIScreen.main.bounds)
 
         // Setup dependencies for the HeroesListFactory
-        let repository = HeroesRepository()
+        let repository = HeroesRepository(
+            apiService: HeroesAPIService(),
+            storageService: HeroesStorageService(
+                persistence: PersistenceController(
+                    inMemory: AppEnvironment.isRunningUITests
+                )
+            )
+        )
         let interactor = HeroesPaginationInteractor(
             repository: repository
         )

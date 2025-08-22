@@ -7,6 +7,7 @@ struct HeroesListView: View {
     @State private var errorAlert: ErrorMessageUIModel?
     let onHeroSelected: (Hero) -> Void
 
+    // MARK: - Init
     init(
         viewModel: HeroesListViewModel,
         onHeroSelected: @escaping (Hero) -> Void
@@ -15,6 +16,7 @@ struct HeroesListView: View {
         self.onHeroSelected = onHeroSelected
     }
 
+    // MARK: - Body
     var body: some View {
         NavigationView {
             content
@@ -31,18 +33,24 @@ struct HeroesListView: View {
                           dismissButton: .default(Text("OK")))
                 }
         }
+        .accessibilityIdentifier(AccessibilityID.screen)
     }
 
+    // MARK: - Content States
     @ViewBuilder
     private var content: some View {
         switch viewModel.state {
         case .idle:
             Color.clear
+
         case let .loadingInitial(message):
             ProgressView(message)
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
+                .accessibilityIdentifier(AccessibilityID.loading)
+
         case let .loaded(heroes, isLoadingMore, paginationError):
             heroList(heroes, showFooter: isLoadingMore, showOfflineRetry: paginationError)
+
         case let .error(_, heroes):
             VStack {
                 if !heroes.isEmpty {
@@ -52,12 +60,18 @@ struct HeroesListView: View {
         }
     }
 
+    // MARK: - Hero List
     @ViewBuilder
-    private func heroList(_ heroes: [HeroListItemUIModel], showFooter: Bool, showOfflineRetry: Bool) -> some View {
+    private func heroList(
+        _ heroes: [HeroListItemUIModel],
+        showFooter: Bool,
+        showOfflineRetry: Bool
+    ) -> some View {
         if showOfflineRetry, heroes.isEmpty {
             offlineRetryColumn()
                 .padding()
                 .fixedSize()
+                .accessibilityIdentifier(AccessibilityID.retryColumn)
         } else {
             List {
                 ForEach(Array(heroes.enumerated()), id: \.element.id) { index, hero in
@@ -71,6 +85,7 @@ struct HeroesListView: View {
                             style: .highlighted(borderColor: Colors.Primary.lightBlue)
                         )
                     }
+                    .accessibilityIdentifier(AccessibilityID.heroCell(hero.id))
                     .fadeSlideIn(index: index)
                     .onAppear {
                         Task { await viewModel.loadMoreHeroesIfNeeded(currentHero: hero) }
@@ -81,21 +96,28 @@ struct HeroesListView: View {
                     HStack {
                         Spacer()
                         ProgressView()
+                            .accessibilityIdentifier(AccessibilityID.paginationSpinner)
                         Spacer()
                     }
                     .id(UUID())
                 } else if showOfflineRetry, !heroes.isEmpty {
                     offlineRetryRow()
+                        .accessibilityIdentifier(AccessibilityID.retryRow)
                 }
             }
+            .accessibilityIdentifier(AccessibilityID.table)
         }
     }
 
     @ViewBuilder
-    private func heroList(_ heroes: [HeroListItemUIModel], showFooter: Bool) -> some View {
+    private func heroList(
+        _ heroes: [HeroListItemUIModel],
+        showFooter: Bool
+    ) -> some View {
         heroList(heroes, showFooter: showFooter, showOfflineRetry: false)
     }
 
+    // MARK: - Retry Views
     @ViewBuilder
     private func offlineRetryRow() -> some View {
         HorizontalTitleWithAction(
@@ -105,6 +127,7 @@ struct HeroesListView: View {
         ) {
             Task { await viewModel.retryPagination() }
         }
+        .accessibilityHint("Tap to retry loading more heroes")
     }
 
     @ViewBuilder
@@ -116,5 +139,6 @@ struct HeroesListView: View {
         ) {
             Task { await viewModel.loadInitialHeroes() }
         }
+        .accessibilityHint("Tap to retry loading heroes")
     }
 }
