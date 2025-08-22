@@ -11,6 +11,10 @@ WallaMarvel uses the public Marvel API to display a **Heroes List** with infinit
 - **Structured Concurrency (async/await)**
 - **iOS 15+**
 
+## Module Dependency Graph
+
+![Module dependency graph](docs/dependency-graph.png)
+
 ## Modules
 The app is highly modularized using SPM:
 
@@ -45,16 +49,6 @@ To provide a smooth, offline-friendly experience:
 - **Snapshot Tests** — `DesignSystem` components are covered with snapshot tests.
 - **Unit Tests** — Each module ships its own unit tests for core logic.
 - **UI Tests** — Live in the app target and cover the core user flow.
-
-## Module Dependency Graph
-> Put the generated image in `docs/` or update the path below.
-
-![Module dependency graph](docs/dependency-graph.png)
-
-<picture>
-  <source media="(prefers-color-scheme: dark)" srcset="docs/dependency-graph-clean.svg">
-  <img alt="Module dependency graph" src="docs/dependency-graph-clean.svg">
-</picture>
 
 ## CI
 In progress…
