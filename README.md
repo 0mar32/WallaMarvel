@@ -49,6 +49,8 @@ To provide a smooth, offline-friendly experience:
 ## Module Dependency Graph
 > Put the generated image in `docs/` or update the path below.
 
+![Module dependency graph](docs/dependency-graph.png)
+
 <picture>
   <source media="(prefers-color-scheme: dark)" srcset="docs/dependency-graph-clean.svg">
   <img alt="Module dependency graph" src="docs/dependency-graph-clean.svg">
