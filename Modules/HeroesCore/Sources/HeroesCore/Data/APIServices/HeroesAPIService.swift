@@ -7,17 +7,17 @@ public protocol HeroesAPIServiceProtocol {
     func fetchHeroes(paginationInfo: PaginationDto?) async throws -> HeroesResponseDto
 }
 
-class HeroesAPIService: HeroesAPIServiceProtocol {
+public class HeroesAPIService: HeroesAPIServiceProtocol {
 
     private let networkClient: NetworkClientProtocol
 
-    init(
+    public init(
         networkClient: NetworkClientProtocol = DefaultNetworkClient.shared
     ) {
         self.networkClient = networkClient
     }
 
-    func fetchHeroes(paginationInfo: PaginationDto?) async throws -> HeroesResponseDto {
+    public func fetchHeroes(paginationInfo: PaginationDto?) async throws -> HeroesResponseDto {
         var payLoad: Payload = .empty
         if let paginationInfo = paginationInfo {
             payLoad = .parameters(paginationInfo)

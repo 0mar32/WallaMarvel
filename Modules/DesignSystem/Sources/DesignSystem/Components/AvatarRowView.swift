@@ -7,7 +7,6 @@
 
 import SwiftUI
 import Kingfisher
-import HeroesCore
 
 public struct AvatarRowView: View {
     public enum Style {
