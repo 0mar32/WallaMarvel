@@ -1,0 +1,167 @@
+name: iOS CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROJECT: WallaMarvel.xcodeproj           
+  APP_SCHEME: WallaMarvel                      # scheme that contains UI tests
+  DESTINATION: platform=iOS Simulator,OS=latest,name=iPhone 15
+  CONFIGURATION: Debug
+  XCODE_VERSION: '16.4'                       
+
+jobs:
+  build-and-test:
+    runs-on: macos-14
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Select Xcode (optional)
+        if: env.XCODE_VERSION != ''
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
+
+      - name: Cache SPM
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.swiftpm
+            ~/Library/Caches/org.swift.swiftpm
+            ~/Library/Developer/Xcode/DerivedData/SourcePackages
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Resolve packages
+        run: |
+          set -eo pipefail
+          if [ -n "${WORKSPACE}" ]; then
+            xcodebuild -resolvePackageDependencies -workspace "${WORKSPACE}"
+          else
+            xcodebuild -resolvePackageDependencies -project "${PROJECT}"
+          fi
+
+      - name: Build app (simulator)
+        run: |
+          set -eo pipefail
+          if [ -n "${WORKSPACE}" ]; then
+            xcodebuild \
+              -workspace "${WORKSPACE}" \
+              -scheme "${APP_SCHEME}" \
+              -configuration "${CONFIGURATION}" \
+              -destination "${DESTINATION}" \
+              CODE_SIGNING_ALLOWED=NO \
+              build
+          else
+            xcodebuild \
+              -project "${PROJECT}" \
+              -scheme "${APP_SCHEME}" \
+              -configuration "${CONFIGURATION}" \
+              -destination "${DESTINATION}" \
+              CODE_SIGNING_ALLOWED=NO \
+              build
+          fi
+
+      - name: Discover & run Module tests (SPM under /Modules)
+        id: module-tests
+        run: |
+          set -eo pipefail
+
+          # Helper to test a scheme from the main workspace/project (so iOS sim is available)
+          run_tests_for_scheme () {
+            local scheme="$1"
+            local bundle="Modules-${scheme}.xcresult"
+            echo "→ Running tests for scheme: ${scheme}"
+            if [ -n "${WORKSPACE}" ]; then
+              xcodebuild test \
+                -workspace "${WORKSPACE}" \
+                -scheme "${scheme}" \
+                -configuration "${CONFIGURATION}" \
+                -destination "${DESTINATION}" \
+                -resultBundlePath "${bundle}" \
+                CODE_SIGNING_ALLOWED=NO
+            else
+              xcodebuild test \
+                -project "${PROJECT}" \
+                -scheme "${scheme}" \
+                -configuration "${CONFIGURATION}" \
+                -destination "${DESTINATION}" \
+                -resultBundlePath "${bundle}" \
+                CODE_SIGNING_ALLOWED=NO
+            fi
+          }
+
+          # Strategy:
+          # 1) If you create .ci/module-schemes.txt with one scheme per line, we use that.
+          # 2) Else, auto-discover by reading each Modules/*/Package.swift and using the package name
+          #    as the scheme (Xcode shares package schemes with the package name by default).
+          mkdir -p .ci
+          if [ -f .ci/module-schemes.txt ]; then
+            echo "Using explicit module schemes from .ci/module-schemes.txt"
+            SCHEMES=$(grep -v '^\s*$' .ci/module-schemes.txt)
+          else
+            echo "Auto-discovering module schemes from /Modules/*/Package.swift"
+            SCHEMES=""
+            for pkg in Modules/*/Package.swift; do
+              dir="$(dirname "$pkg")"
+              # Grab the package name via swift's JSON (robust)
+              name=$(swift package --package-path "$dir" dump-package | python3 -c 'import sys,json; print(json.load(sys.stdin)["name"])')
+              # Optionally: skip if no Tests target exists in the package
+              has_tests=$(swift package --package-path "$dir" dump-package | python3 - <<'PY'
+import sys, json
+d=json.load(sys.stdin)
+print(any(t.get('type')=='test' for t in d.get('targets',[])))
+PY
+)
+              if [ "$has_tests" = "True" ] || [ "$has_tests" = "true" ]; then
+                SCHEMES="$SCHEMES
+$name"
+              fi
+            done
+          fi
+
+          # De-dupe and run
+          echo "$SCHEMES" | awk '{$1=$1};1' | sort | uniq | while read -r scheme; do
+            [ -z "$scheme" ] && continue
+            run_tests_for_scheme "$scheme"
+          done
+
+      - name: Run UI tests (app scheme)
+        run: |
+          set -eo pipefail
+          UI_BUNDLE="UITests-${APP_SCHEME}.xcresult"
+          if [ -n "${WORKSPACE}" ]; then
+            xcodebuild test \
+              -workspace "${WORKSPACE}" \
+              -scheme "${APP_SCHEME}" \
+              -configuration "${CONFIGURATION}" \
+              -destination "${DESTINATION}" \
+              -resultBundlePath "${UI_BUNDLE}" \
+              CODE_SIGNING_ALLOWED=NO
+          else
+            xcodebuild test \
+              -project "${PROJECT}" \
+              -scheme "${APP_SCHEME}" \
+              -configuration "${CONFIGURATION}" \
+              -destination "${DESTINATION}" \
+              -resultBundlePath "${UI_BUNDLE}" \
+              CODE_SIGNING_ALLOWED=NO
+          fi
+
+      - name: Upload .xcresult bundles
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcresults
+          path: |
+            *.xcresult
+          if-no-files-found: ignore
