@@ -10,8 +10,8 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PROJECT: WallaMarvel.xcodeproj
-  APP_SCHEME: WallaMarvel
+  PROJECT: WallaMarvel/WallaMarvel.xcodeproj           
+  APP_SCHEME: WallaMarvel                      # scheme that contains UI tests
   DESTINATION: platform=iOS Simulator,OS=latest,name=iPhone 15
   CONFIGURATION: Debug
   XCODE_VERSION: '16.2'
