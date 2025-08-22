@@ -10,11 +10,11 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PROJECT: WallaMarvel.xcodeproj           
-  APP_SCHEME: WallaMarvel                      # scheme that contains UI tests
+  PROJECT: WallaMarvel.xcodeproj
+  APP_SCHEME: WallaMarvel
   DESTINATION: platform=iOS Simulator,OS=latest,name=iPhone 15
   CONFIGURATION: Debug
-  XCODE_VERSION: '16.4'                       
+  XCODE_VERSION: '16.4'
 
 jobs:
   build-and-test:
@@ -42,6 +42,7 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: Resolve packages
+        shell: bash
         run: |
           set -eo pipefail
           if [ -n "${WORKSPACE}" ]; then
@@ -51,6 +52,7 @@ jobs:
           fi
 
       - name: Build app (simulator)
+        shell: bash
         run: |
           set -eo pipefail
           if [ -n "${WORKSPACE}" ]; then
@@ -73,10 +75,10 @@ jobs:
 
       - name: Discover & run Module tests (SPM under /Modules)
         id: module-tests
+        shell: bash
         run: |
           set -eo pipefail
 
-          # Helper to test a scheme from the main workspace/project (so iOS sim is available)
           run_tests_for_scheme () {
             local scheme="$1"
             local bundle="Modules-${scheme}.xcresult"
@@ -101,40 +103,42 @@ jobs:
           }
 
           # Strategy:
-          # 1) If you create .ci/module-schemes.txt with one scheme per line, we use that.
-          # 2) Else, auto-discover by reading each Modules/*/Package.swift and using the package name
-          #    (ensure each package scheme is Shared in Xcode).
+          # 1) If .ci/module-schemes.txt exists, use it (one scheme per line).
+          # 2) Else, auto-discover from /Modules/*/Package.swift (only if package has a test target).
 
           mkdir -p .ci
+          declare -a SCHEMES=()
+
           if [ -f .ci/module-schemes.txt ]; then
             echo "Using explicit module schemes from .ci/module-schemes.txt"
-            # remove blank lines and trim whitespace
-            SCHEMES=$(grep -Ev '^[[:space:]]*$' .ci/module-schemes.txt | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
+            while IFS= read -r line; do
+              line="$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+              [ -z "$line" ] && continue
+              SCHEMES+=("$line")
+            done < .ci/module-schemes.txt
           else
             echo "Auto-discovering module schemes from /Modules/*/Package.swift"
-            SCHEMES=""
             shopt -s nullglob
             for pkg in Modules/*/Package.swift; do
               dir="$(dirname "$pkg")"
-              # Dump once; use it for both checks
               json="$(swift package --package-path "$dir" dump-package)"
               name="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d["name"])')"
               has_tests="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(any(t.get("type")=="test" for t in d.get("targets",[])))')"
               if [ "$has_tests" = "True" ] || [ "$has_tests" = "true" ]; then
-                SCHEMES="${SCHEMES}
-                ${name}"
+                SCHEMES+=("$name")
               fi
             done
             shopt -u nullglob
           fi
 
           # De-dupe and run
-          echo "$SCHEMES" | awk '{$1=$1};1' | sort | uniq | while read -r scheme; do
+          printf "%s\n" "${SCHEMES[@]}" | awk '{$1=$1};1' | sort -u | while read -r scheme; do
             [ -z "$scheme" ] && continue
             run_tests_for_scheme "$scheme"
           done
-    
+
       - name: Run UI tests (app scheme)
+        shell: bash
         run: |
           set -eo pipefail
           UI_BUNDLE="UITests-${APP_SCHEME}.xcresult"
