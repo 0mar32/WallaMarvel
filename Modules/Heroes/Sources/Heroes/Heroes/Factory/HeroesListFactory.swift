@@ -10,7 +10,6 @@ import SwiftUI
 import UIKit
 import HeroesCore
 
-// Factory for creating HeroesList screen
 final public class HeroesListFactory {
 
     public struct Dependencies {
