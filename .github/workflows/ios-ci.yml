@@ -10,15 +10,15 @@ concurrency:
   cancel-in-progress: true
 
 env:
-  PROJECT: WallaMarvel.xcodeproj           
+  PROJECT: WallaMarvel/WallaMarvel.xcodeproj           
   APP_SCHEME: WallaMarvel                      # scheme that contains UI tests
-  DESTINATION: platform=iOS Simulator,OS=latest,name=iPhone 15
+  DESTINATION: platform=iOS Simulator,OS=18.5,name=iPhone 16 Pro
   CONFIGURATION: Debug
-  XCODE_VERSION: '16.4'                       
+  XCODE_VERSION: '16.4'
 
 jobs:
   build-and-test:
-    runs-on: macos-14
+    runs-on: macos-15
 
     steps:
       - name: Check out
@@ -42,6 +42,7 @@ jobs:
             ${{ runner.os }}-spm-
 
       - name: Resolve packages
+        shell: bash
         run: |
           set -eo pipefail
           if [ -n "${WORKSPACE}" ]; then
@@ -51,6 +52,7 @@ jobs:
           fi
 
       - name: Build app (simulator)
+        shell: bash
         run: |
           set -eo pipefail
           if [ -n "${WORKSPACE}" ]; then
@@ -71,17 +73,18 @@ jobs:
               build
           fi
 
-      - name: Discover & run Module tests (SPM under /Modules)
+            - name: Discover & run Module tests (SPM under /Modules)
         id: module-tests
+        shell: bash
         run: |
           set -eo pipefail
 
-          # Helper to test a scheme from the main workspace/project (so iOS sim is available)
+          # Runs xcodebuild test for a given *scheme name*.
           run_tests_for_scheme () {
             local scheme="$1"
             local bundle="Modules-${scheme}.xcresult"
             echo "→ Running tests for scheme: ${scheme}"
-            if [ -n "${WORKSPACE}" ]; then
+            if [ -n "${WORKSPACE:-}" ]; then
               xcodebuild test \
                 -workspace "${WORKSPACE}" \
                 -scheme "${scheme}" \
@@ -100,42 +103,63 @@ jobs:
             fi
           }
 
-          # Strategy:
-          # 1) If you create .ci/module-schemes.txt with one scheme per line, we use that.
-          # 2) Else, auto-discover by reading each Modules/*/Package.swift and using the package name
-          #    as the scheme (Xcode shares package schemes with the package name by default).
-          mkdir -p .ci
-          if [ -f .ci/module-schemes.txt ]; then
-            echo "Using explicit module schemes from .ci/module-schemes.txt"
-            SCHEMES=$(grep -v '^\s*$' .ci/module-schemes.txt)
-          else
-            echo "Auto-discovering module schemes from /Modules/*/Package.swift"
-            SCHEMES=""
-            for pkg in Modules/*/Package.swift; do
-              dir="$(dirname "$pkg")"
-              # Grab the package name via swift's JSON (robust)
-              name=$(swift package --package-path "$dir" dump-package | python3 -c 'import sys,json; print(json.load(sys.stdin)["name"])')
-              # Optionally: skip if no Tests target exists in the package
-              has_tests=$(swift package --package-path "$dir" dump-package | python3 - <<'PY'
-import sys, json
-d=json.load(sys.stdin)
-print(any(t.get('type')=='test' for t in d.get('targets',[])))
-PY
-)
-              if [ "$has_tests" = "True" ] || [ "$has_tests" = "true" ]; then
-                SCHEMES="$SCHEMES
-$name"
+          # Chooses a testable scheme for a given *package name*.
+          run_tests_for_package () {
+            local pkg="$1"
+            local candidates=("${pkg}-Package" "${pkg}")
+            local chosen=""
+
+            for s in "${candidates[@]}"; do
+              if [ -n "${WORKSPACE:-}" ]; then
+                if xcodebuild -workspace "${WORKSPACE}" -scheme "${s}" -showBuildSettings >/dev/null 2>&1; then
+                  chosen="$s"; break
+                fi
+              else
+                if xcodebuild -project "${PROJECT}" -scheme "${s}" -showBuildSettings >/dev/null 2>&1; then
+                  chosen="$s"; break
+                fi
               fi
             done
+
+            if [ -z "$chosen" ]; then
+              echo "⚠️  No scheme found for package '${pkg}' (skipping)"; return 0
+            fi
+
+            run_tests_for_scheme "$chosen"
+          }
+
+          # Get package names:
+          # 1) If .ci/module-schemes.txt exists, use those lines as *package names* (not scheme names).
+          # 2) Else, auto-discover by reading Modules/*/Package.swift and taking the package "name".
+          declare -a PACKAGES=()
+          if [ -f .ci/module-schemes.txt ]; then
+            while IFS= read -r line; do
+              line="$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
+              [ -z "$line" ] && continue
+              PACKAGES+=("$line")
+            done < .ci/module-schemes.txt
+          else
+            shopt -s nullglob
+            for pkgfile in Modules/*/Package.swift; do
+              dir="$(dirname "$pkgfile")"
+              json="$(swift package --package-path "$dir" dump-package)"
+              name="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d["name"])')"
+              has_tests="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(any(t.get("type")=="test" for t in d.get("targets",[])))')"
+              if [ "$has_tests" = "True" ] || [ "$has_tests" = "true" ]; then
+                PACKAGES+=("$name")
+              fi
+            done
+            shopt -u nullglob
           fi
 
-          # De-dupe and run
-          echo "$SCHEMES" | awk '{$1=$1};1' | sort | uniq | while read -r scheme; do
-            [ -z "$scheme" ] && continue
-            run_tests_for_scheme "$scheme"
+          # De-dupe package names and run their tests
+          printf "%s\n" "${PACKAGES[@]}" | awk '{$1=$1};1' | sort -u | while read -r pkg; do
+            [ -z "$pkg" ] && continue
+            run_tests_for_package "$pkg"
           done
 
       - name: Run UI tests (app scheme)
+        shell: bash
         run: |
           set -eo pipefail
           UI_BUNDLE="UITests-${APP_SCHEME}.xcresult"
