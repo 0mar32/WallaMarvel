@@ -103,30 +103,36 @@ jobs:
           # Strategy:
           # 1) If you create .ci/module-schemes.txt with one scheme per line, we use that.
           # 2) Else, auto-discover by reading each Modules/*/Package.swift and using the package name
-          #    as the scheme (Xcode shares package schemes with the package name by default).
+          #    (Xcode can share a scheme with the package name by default; ensure it's Shared).
+
           mkdir -p .ci
           if [ -f .ci/module-schemes.txt ]; then
             echo "Using explicit module schemes from .ci/module-schemes.txt"
-            SCHEMES=$(grep -v '^\s*$' .ci/module-schemes.txt)
+            # remove blank lines and trim whitespace
+            SCHEMES=$(grep -Ev '^[[:space:]]*$' .ci/module-schemes.txt | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')
           else
             echo "Auto-discovering module schemes from /Modules/*/Package.swift"
             SCHEMES=""
+            shopt -s nullglob
             for pkg in Modules/*/Package.swift; do
               dir="$(dirname "$pkg")"
-              # Grab the package name via swift's JSON (robust)
-              name=$(swift package --package-path "$dir" dump-package | python3 -c 'import sys,json; print(json.load(sys.stdin)["name"])')
-              # Optionally: skip if no Tests target exists in the package
-              has_tests=$(swift package --package-path "$dir" dump-package | python3 - <<'PY'
-import sys, json
-d=json.load(sys.stdin)
-print(any(t.get('type')=='test' for t in d.get('targets',[])))
-PY
-)
+              # Dump once; use it for both checks
+              json="$(swift package --package-path "$dir" dump-package)"
+              name="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d["name"])')"
+              has_tests="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(any(t.get("type")=="test" for t in d.get("targets",[])))')"
               if [ "$has_tests" = "True" ] || [ "$has_tests" = "true" ]; then
-                SCHEMES="$SCHEMES
-$name"
+                SCHEMES="${SCHEMES}
+          ${name}"
               fi
             done
+            shopt -u nullglob
+          fi
+
+          # De-dupe and run
+          echo "$SCHEMES" | awk '{$1=$1};1' | sort | uniq | while read -r scheme; do
+            [ -z "$scheme" ] && continue
+            run_tests_for_scheme "$scheme"
+          done
           fi
 
           # De-dupe and run
