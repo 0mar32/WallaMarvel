@@ -7,9 +7,11 @@
 
 import UIKit
 import OHHTTPStubs
+import AppConfig
+import NetworkStubsUITestUtils
 
-enum AppConfiguration {
-    static func configureOnLaunch() {
+public enum AppConfiguration {
+    public static func configureOnLaunch() {
         #if DEBUG
         // Only enable network stubs for UITests
         if AppEnvironment.isRunningUITests && AppEnvironment.shouldUseStubs {

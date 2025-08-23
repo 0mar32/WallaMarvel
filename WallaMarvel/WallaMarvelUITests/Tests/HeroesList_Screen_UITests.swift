@@ -1,10 +1,15 @@
 import XCTest
+import NetworkStubsUITestUtils
 @testable import Heroes
 
 final class HeroesList_Smoke_UITests: XCTestCase {
 
-    private func launchApp(args: [String] = [], stubs: StubsConfiguration = StubsConfiguration()) -> XCUIApplication {
-        XCUIApplication().launchForUITestsWithStubs(args: args, stubs: stubs)
+    private func launchApp(
+        args: [String] = [],
+        stubs: StubsConfiguration = StubsConfiguration()
+    ) -> XCUIApplication {
+        XCUIApplication()
+            .launchForUITestsWithStubs(args: args, stubs: stubs)
     }
 
     func test_list_appears_with_first_hero() {
@@ -32,7 +37,7 @@ final class HeroesList_Smoke_UITests: XCTestCase {
     }
 
     func test_pagination_offline_shows_retry_row() {
-        let app = launchApp(stubs: .init(heroesAPIServiceCase: .secondPageOffline))
+        let app = launchApp(stubs: .init(heroesAPIServiceUseCase: .secondPageOffline))
         let list = HeroesListScreen(app: app).waitLoaded()
 
         list.scrollToBottom(times: 3)
@@ -41,7 +46,7 @@ final class HeroesList_Smoke_UITests: XCTestCase {
     }
 
     func test_offline_first_page_shows_retry_column_immediately() {
-        let app = launchApp(stubs: .init(heroesAPIServiceCase: .offline))
+        let app = launchApp(stubs: .init(heroesAPIServiceUseCase: .offline))
         let list = HeroesListScreen(app: app)
 
         _ = list.waitForRetryColumn()
@@ -53,7 +58,7 @@ final class HeroesList_Smoke_UITests: XCTestCase {
     }
 
     func test_tapping_first_hero_navigates_to_details() throws {
-        let app = launchApp(stubs: .init(heroesAPIServiceCase: .twoPages))
+        let app = launchApp(stubs: .init(heroesAPIServiceUseCase: .twoPages))
         let list = HeroesListScreen(app: app).waitLoaded()
 
         // the first hero name from page 0, index 0

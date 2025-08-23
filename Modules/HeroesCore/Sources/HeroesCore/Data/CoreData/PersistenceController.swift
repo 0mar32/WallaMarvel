@@ -8,8 +8,6 @@
 import Foundation
 import CoreData
 
-import CoreData
-
 public final class PersistenceController: Sendable {
     public static let shared = PersistenceController(inMemory: false)
 
@@ -21,7 +19,7 @@ public final class PersistenceController: Sendable {
         let model: NSManagedObjectModel = {
             // Try explicit momd in common bundles first
             let candidateBundles: [Bundle] = [
-                Bundle.module,                // SPM package (if applicable)
+                Bundle.module,                // SPM package
                 Bundle.main,                  // App bundle
                 Bundle(for: DummySentinel.self) // This module’s bundle
             ]

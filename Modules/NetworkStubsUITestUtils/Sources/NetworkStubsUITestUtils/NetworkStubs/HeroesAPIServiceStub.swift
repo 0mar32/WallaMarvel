@@ -14,8 +14,8 @@ protocol APIServiceStub {
     static func makeStubs(for useCase: UseCase)
 }
 
-enum HeroesAPIServiceStubFactory: APIServiceStub {
-    enum UseCase: String {
+public enum HeroesAPIServiceStubFactory: APIServiceStub {
+    public enum UseCase: String, Codable {
         case twoPages
         case secondPageOffline
         case offline
@@ -40,7 +40,7 @@ enum HeroesAPIServiceStubFactory: APIServiceStub {
              isPath("/v1/public/characters") &&
              containsQueryParams(["offset": "0"])
         ) { _ in
-            return jsonFixture("heroes_page_0.json").responseTime(0.25)
+            return httpStubsResponse(for: "heroes_page_0.json").responseTime(0.25)
         }
 
         // Page 1
@@ -50,7 +50,7 @@ enum HeroesAPIServiceStubFactory: APIServiceStub {
              isPath("/v1/public/characters") &&
              containsQueryParams(["offset": "20"])
         ) { _ in
-            return jsonFixture("heroes_page_1.json").responseTime(0.25)
+            return httpStubsResponse(for: "heroes_page_1.json").responseTime(0.25)
         }
     }
 
@@ -62,7 +62,7 @@ enum HeroesAPIServiceStubFactory: APIServiceStub {
              isPath("/v1/public/characters") &&
              containsQueryParams(["offset": "0"])
         ) { _ in
-            jsonFixture("heroes_page_0.json").responseTime(0.25)
+            httpStubsResponse(for: "heroes_page_0.json").responseTime(0.25)
         }
 
         // Page 1 - offline
@@ -89,8 +89,12 @@ enum HeroesAPIServiceStubFactory: APIServiceStub {
         }
     }
 
-    private static func jsonFixture(_ name: String, status: Int32 = 200) -> HTTPStubsResponse {
-        let url = Bundle.main.url(forResource: name, withExtension: nil)!
+    private static func httpStubsResponse(
+        for fileName: String,
+        status: Int32 = 200
+    ) -> HTTPStubsResponse {
+        let name = fileName.hasSuffix(".json") ? String(fileName.dropLast(5)) : fileName
+        let url = fixtureUrl(for: name)
         return HTTPStubsResponse(fileURL: url, statusCode: status, headers: ["Content-Type": "application/json"])
     }
 }

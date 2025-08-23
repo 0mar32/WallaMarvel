@@ -6,6 +6,7 @@
 //
 import Foundation
 import XCTest
+import NetworkStubsUITestUtils
 
 enum HeroesFixture {
     enum Page: String {
@@ -17,14 +18,7 @@ enum HeroesFixture {
 
     /// Loads the last hero's name from a fixture JSON in the UITest bundle.
     static func loadHeroFromFixture(page: Page = .first, index: Int = 0) throws -> String {
-        guard let url = Bundle(for: HeroesList_Smoke_UITests.self).url(
-            forResource: page.name,
-            withExtension: "json"
-        ) else {
-            XCTFail("Missing fixture \(page.name).json in UITest bundle")
-            throw NSError(domain: "fixture", code: 1)
-        }
-
+        let url = fixtureUrl(for: page.name)
         let data = try Data(contentsOf: url)
 
         struct Response: Decodable { let data: DataContainer }
