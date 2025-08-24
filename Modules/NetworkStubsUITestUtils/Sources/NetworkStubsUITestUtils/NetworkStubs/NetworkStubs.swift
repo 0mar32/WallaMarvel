@@ -9,13 +9,10 @@
 import Foundation
 import OHHTTPStubs
 import OHHTTPStubsSwift
+import AppConfig
 
-struct StubsConfiguration: Decodable {
-    var heroesAPIServiceCase = HeroesAPIServiceStubFactory.UseCase.twoPages.rawValue
-}
-
-enum NetworkStubs {
-    static func install() {
+public enum NetworkStubs {
+    public static func install() {
         guard ProcessInfo.processInfo.arguments.contains(LaunchArguments.uiTest)
         else { return }
 
@@ -23,22 +20,18 @@ enum NetworkStubs {
         let env = ProcessInfo.processInfo.environment
 
         // Default case
-        var useCase: HeroesAPIServiceStubFactory.UseCase = .twoPages
+        var HeroesAPIUseCase: HeroesAPIServiceStubFactory.UseCase = .twoPages
 
         // Pick passed UseCases
         if let json = env[EnvironmentArguments.stubsConfig],
            let data = json.data(using: .utf8),
            let stubConfig = try? JSONDecoder().decode(StubsConfiguration.self, from: data) {
 
-            if let parsed = HeroesAPIServiceStubFactory.UseCase(rawValue: stubConfig.heroesAPIServiceCase) {
-                useCase = parsed
-            }
+            HeroesAPIUseCase = stubConfig.heroesAPIServiceUseCase
         }
 
         // Stub APIs
-        HeroesAPIServiceStubFactory.makeStubs(for: useCase)
-
+        HeroesAPIServiceStubFactory.makeStubs(for: HeroesAPIUseCase)
     }
 }
-
 #endif

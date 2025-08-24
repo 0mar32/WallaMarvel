@@ -20,7 +20,7 @@ The app is highly modularized using SPM:
 
 - **DesignSystem** — Centralizes visual language and reusable UI components; provides design guidelines and principles.
 - **NetworkClient** — App-agnostic HTTP client with optional middleware support.
-- **NetworkClientConfig** — Centralized configuration for the agnostic `NetworkClient` across modules.
+- **AppConfig** — Centralized configuration for the agnostic `NetworkClient` across modules.
 - **HeroesCore** — Data & domain layer for heroes (repositories, services, models). UI-agnostic and reusable.
 - **Heroes** — Feature module that renders the **Heroes List** with pagination.
 - **HeroDetails** — Feature module that renders the **Hero Details** view.

@@ -18,8 +18,16 @@ public protocol HeroesStorageServiceProtocol {
 public class HeroesStorageService: HeroesStorageServiceProtocol {
     private let persistence: PersistenceController
 
-    public init(persistence: PersistenceController = .shared) {
+    public init(persistence: PersistenceController) {
         self.persistence = persistence
+    }
+
+    public convenience init(isMemoryStorage: Bool = false) {
+        if isMemoryStorage {
+            self.init(persistence: .init(inMemory: isMemoryStorage))
+        } else {
+            self.init(persistence: .shared)
+        }
     }
 
     // Fetch on main thread (viewContext)

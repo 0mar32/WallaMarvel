@@ -1,6 +1,7 @@
 import Foundation
 import CoreData
 import NetworkClient
+import AppConfig
 
 // MARK: - Repository Protocol
 public protocol HeroesRepositoryProtocol: Sendable {
@@ -29,11 +30,17 @@ public class HeroesRepository: HeroesRepositoryProtocol, @unchecked Sendable {
         self.updateContinuation = continuation
     }
 
-    convenience public init() {
+    convenience public init(inMemoryStorage: Bool = false) {
         self.init(
             apiService: HeroesAPIService(),
-            storageService: HeroesStorageService()
+            storageService: HeroesStorageService(
+                isMemoryStorage: inMemoryStorage
+            )
         )
+    }
+
+    convenience public init() {
+        self.init(inMemoryStorage: AppEnvironment.isRunningUITests)
     }
 
     public func fetchHeroes(limit: Int, offset: Int) async throws -> HeroesContainer {

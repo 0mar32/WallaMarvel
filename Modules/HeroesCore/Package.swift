@@ -19,8 +19,8 @@ let package = Package(
     dependencies: [
         // Local dependency on NetworkClient
         .package(path: "../NetworkClient"),
-        .package(path: "../NetworkClientConfig"),
-        .package(path: "../UnitTestingUtils")
+        .package(path: "../AppConfig"),
+        .package(path: "../UnitTestingUtils"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -29,7 +29,7 @@ let package = Package(
             name: "HeroesCore",
             dependencies: [
                 "NetworkClient",
-                "NetworkClientConfig"
+                "AppConfig"
             ]
         ),
         .target(
