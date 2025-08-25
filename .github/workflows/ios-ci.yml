@@ -75,36 +75,65 @@ jobs:
               build
           fi
 
+      - name: List project/workspace schemes
+        run: |
+          if [ -n "${WORKSPACE:-}" ]; then
+            xcodebuild -list -json -workspace "${WORKSPACE}"
+          else
+            xcodebuild -list -json -project "${PROJECT}"
+          fi | python3 -c 'import sys,json; d=json.load(sys.stdin); print("\n".join((d.get("schemes") or (d.get("project") or {}).get("schemes",[])) or []))'
+  
       - name: Discover & run Module tests (SPM under /Modules)
         run: |
           set -eo pipefail
           shopt -s nullglob
 
+          list_schemes_json () {
+            if [ -n "${WORKSPACE:-}" ]; then
+              xcodebuild -list -json -workspace "${WORKSPACE}"
+            else
+              xcodebuild -list -json -project "${PROJECT}"
+            fi
+          }
+
+          scheme_exists () {
+            local s="$1"
+            list_schemes_json | \
+              python3 -c 'import sys,json; d=json.load(sys.stdin); schemes=(d.get("schemes") or (d.get("project") or {}).get("schemes",[])) or []; t=sys.argv[1]; sys.exit(0 if t in schemes else 1)' "$s"
+          }
+
           for pkgfile in Modules/*/Package.swift; do
             dir="$(dirname "$pkgfile")"
 
-            # Extract package name and whether it has test targets
+            # Read package metadata to decide if it has tests
             json="$(swift package --package-path "$dir" dump-package)"
             name="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d["name"])')"
             has_tests="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(any(t.get("type")=="test" for t in d.get("targets",[])))')"
 
             if [ "$has_tests" = "True" ] || [ "$has_tests" = "true" ]; then
-              echo "→ Running tests for package: ${name} at ${dir}"
+              echo "→ Running tests for package: ${name}"
               bundle="Modules-${name}.xcresult"
 
               ran=""
               for scheme in "${name}-Package" "${name}"; do
-                # Check if the scheme exists for this package
-                if xcodebuild -list -json -packagePath "$dir" | \
-                   python3 -c 'import sys,json; d=json.load(sys.stdin); schemes=(d.get("schemes") or d.get("project",{}).get("schemes",[])) or []; target=sys.argv[1]; sys.exit(0 if target in schemes else 1)' "$scheme"
-                then
-                  # Run tests with the first matching scheme
-                  xcodebuild test \
-                    -packagePath "$dir" \
-                    -scheme "$scheme" \
-                    -destination "${DESTINATION}" \
-                    -resultBundlePath "$bundle" \
-                    CODE_SIGNING_ALLOWED=NO
+                if scheme_exists "$scheme"; then
+                  if [ -n "${WORKSPACE:-}" ]; then
+                    xcodebuild test \
+                      -workspace "${WORKSPACE}" \
+                      -scheme "$scheme" \
+                      -configuration "${CONFIGURATION}" \
+                      -destination "${DESTINATION}" \
+                      -resultBundlePath "$bundle" \
+                      CODE_SIGNING_ALLOWED=NO
+                  else
+                    xcodebuild test \
+                      -project "${PROJECT}" \
+                      -scheme "$scheme" \
+                      -configuration "${CONFIGURATION}" \
+                      -destination "${DESTINATION}" \
+                      -resultBundlePath "$bundle" \
+                      CODE_SIGNING_ALLOWED=NO
+                  fi
                   ran="yes"
                   break
                 fi
@@ -119,7 +148,6 @@ jobs:
           done
 
           shopt -u nullglob
-
 
       - name: Run UI tests (app scheme)
         run: |
