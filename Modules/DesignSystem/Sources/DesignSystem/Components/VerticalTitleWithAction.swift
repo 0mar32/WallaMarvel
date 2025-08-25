@@ -31,7 +31,7 @@ public struct VerticalTitleWithAction: View {
                 Image(systemName: icon.systemName)
             }
             Text(title)
-                .lineLimit(1)
+                .lineLimit(2)
                 .truncationMode(.tail)
             Spacer()
             Button(buttonTitle, action: action)

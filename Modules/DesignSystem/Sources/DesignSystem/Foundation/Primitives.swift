@@ -29,6 +29,15 @@ public enum Primitives {
         public static let u80: CGFloat = 80
         public static let u96: CGFloat = 96
         public static let u128: CGFloat = 128
+        public static let u144: CGFloat = 144
+        public static let u160: CGFloat = 160
+        public static let u192: CGFloat = 192
+        public static let u224: CGFloat = 224
+        public static let u256: CGFloat = 256
+        public static let u320: CGFloat = 320
+        public static let u384: CGFloat = 384
+        public static let u448: CGFloat = 448
+        public static let u512: CGFloat = 512
     }
 
     // MARK: - Colors

@@ -16,7 +16,7 @@ extension HeroesListView {
         static let retryColumn = "HeroesList_RetryColumn"
         static let retryRow = "HeroesList_RetryRow"
 
-        static func heroCell(_ id: Int) -> String {
+        static func heroCell(_ id: String) -> String {
             "HeroCell_\(id)"
         }
     }

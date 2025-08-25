@@ -23,6 +23,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         return true
     }
 
+    // TODO: Define an AppCoordinator
     func setRootViewController() {
         let window = UIWindow(frame: UIScreen.main.bounds)
 

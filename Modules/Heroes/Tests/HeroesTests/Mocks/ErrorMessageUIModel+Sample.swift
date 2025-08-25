@@ -11,8 +11,9 @@ import Foundation
 extension ErrorMessageUIModel {
     static func sample(
         title: String = "Error",
-        text: String = "Something went wrong"
+        text: String = "Something went wrong",
+        actionTitle: String = "Ok"
     ) -> ErrorMessageUIModel {
-        ErrorMessageUIModel(title: title, text: text)
+        ErrorMessageUIModel(title: title, message: text, actionTitle: actionTitle)
     }
 }

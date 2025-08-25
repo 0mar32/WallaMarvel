@@ -6,8 +6,7 @@
 //
 
 import UIKit
-import AppConfig
-import NetworkStubsUITestUtils
+import OHHTTPStubs
 
 enum AppConfiguration {
     static func configureOnLaunch() {

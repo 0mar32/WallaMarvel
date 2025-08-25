@@ -8,6 +8,7 @@
 import XCTest
 import AppConfig
 import NetworkStubsUITestUtils
+import Kingfisher
 
 extension XCUIApplication {
     @discardableResult

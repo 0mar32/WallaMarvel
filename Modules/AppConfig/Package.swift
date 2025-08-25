@@ -12,9 +12,8 @@ let package = Package(
             name: "AppConfig",
             targets: ["AppConfig"]),
     ],
-     dependencies: [
-        // Local dependency on NetworkClient
-        .package(path: "../NetworkClient")
+    dependencies: [
+        .package(path: "../NetworkClient"),
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.
@@ -22,12 +21,9 @@ let package = Package(
         .target(
             name: "AppConfig",
             dependencies: [
-                "NetworkClient" // This is the *product name* from NetworkClient’s Package.swift
+                "NetworkClient"
             ]
         ),
-        .testTarget(
-            name: "AppConfigTests",
-            dependencies: ["AppConfig"]
-        ),
+
     ]
 )

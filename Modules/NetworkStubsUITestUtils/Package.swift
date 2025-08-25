@@ -7,27 +7,29 @@ let package = Package(
     name: "NetworkStubsUITestUtils",
     platforms: [.iOS(.v15)],
     products: [
-        .library(name: "NetworkStubsUITestUtils", targets: ["NetworkStubsUITestUtils"]),
+        // Products define the executables and libraries a package produces, making them visible to other packages.
+        .library(
+            name: "NetworkStubsUITestUtils",
+            targets: ["NetworkStubsUITestUtils"]),
     ],
     dependencies: [
-        .package(url: "https://github.com/AliSoftware/OHHTTPStubs.git", from: "9.1.0"),
-        .package(path: "../AppConfig")
+        .package(url: "https://github.com/AliSoftware/OHHTTPStubs", from: "9.1.0"),
+        .package(path: "../AppConfig"),
     ],
     targets: [
+        // Targets are the basic building blocks of a package, defining a module or a test suite.
+        // Targets can depend on other targets in this package and products from dependencies.
         .target(
             name: "NetworkStubsUITestUtils",
             dependencies: [
+                "AppConfig",
                 .product(name: "OHHTTPStubsSwift", package: "OHHTTPStubs"),
-                "AppConfig"
+                .product(name: "OHHTTPStubs", package: "OHHTTPStubs"),
             ],
             resources: [
-                // Put your fixtures here: Resources/heroes_page_0.json, Resources/heroes_page_1.json
-                .process("Resources")
-            ],
-            swiftSettings: [
-                // Xcode also defines DEBUG for Debug config, this just makes it explicit for SPM builds
-                .define("DEBUG", .when(configuration: .debug))
+                .process("Resources"),
             ]
-        )
+        ),
+
     ]
 )

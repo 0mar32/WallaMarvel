@@ -20,7 +20,7 @@ let package = Package(
         // Local dependency on NetworkClient
         .package(path: "../NetworkClient"),
         .package(path: "../AppConfig"),
-        .package(path: "../UnitTestingUtils"),
+        .package(path: "../UnitTestingUtils")
     ],
     targets: [
         // Targets are the basic building blocks of a package, defining a module or a test suite.

@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import AppConfig
 
 // MARK: - Storage Service Protocol
 public protocol HeroesStorageServiceProtocol {
@@ -22,7 +23,7 @@ public class HeroesStorageService: HeroesStorageServiceProtocol {
         self.persistence = persistence
     }
 
-    public convenience init(isMemoryStorage: Bool = false) {
+    public convenience init(isMemoryStorage: Bool = AppEnvironment.isRunningUITests) {
         if isMemoryStorage {
             self.init(persistence: .init(inMemory: isMemoryStorage))
         } else {

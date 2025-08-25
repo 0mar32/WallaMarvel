@@ -114,7 +114,7 @@ extension AvatarRowViewTests {
 enum KFTestCache {
     static func clearAll() {
         ImageCache.default.clearMemoryCache()
-        ImageCache.default.clearDiskCache() // shouldn’t be needed if you store in memory-only
+        ImageCache.default.clearDiskCache()
     }
 
     static func preloadMemory(image: UIImage, for url: URL) {

@@ -22,14 +22,12 @@
 		1D7E428B2E56A34D00E9B690 /* XCUIApplication+DSL.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1D7E428A2E56A34C00E9B690 /* XCUIApplication+DSL.swift */; };
 		1D7E428D2E56AFC700E9B690 /* OHHTTPStubs in Frameworks */ = {isa = PBXBuildFile; productRef = 1D7E428C2E56AFC700E9B690 /* OHHTTPStubs */; };
 		1D7E428F2E56AFC700E9B690 /* OHHTTPStubsSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 1D7E428E2E56AFC700E9B690 /* OHHTTPStubsSwift */; };
-		1DA50D2A2E57CA6700C49116 /* FixtureReader.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA50D292E57CA5A00C49116 /* FixtureReader.swift */; };
 		1DA531322E5919EB00C49116 /* AppConfig in Frameworks */ = {isa = PBXBuildFile; productRef = 1DA531312E5919EB00C49116 /* AppConfig */; };
-		1DA531342E591D0400C49116 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA531332E591D0400C49116 /* AppConfiguration.swift */; };
-		1DA531352E591D0400C49116 /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DA531332E591D0400C49116 /* AppConfiguration.swift */; };
 		1DA555372E5926B500C49116 /* NetworkStubsUITestUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 1DA555362E5926B500C49116 /* NetworkStubsUITestUtils */; };
 		1DA555392E592B2600C49116 /* NetworkStubsUITestUtils in Frameworks */ = {isa = PBXBuildFile; productRef = 1DA555382E592B2600C49116 /* NetworkStubsUITestUtils */; };
 		1DD74A392E4FECEB0064A3A3 /* HeroDetails in Frameworks */ = {isa = PBXBuildFile; productRef = 1DD74A382E4FECEB0064A3A3 /* HeroDetails */; };
 		1DD74A3C2E501AAC0064A3A3 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 1DD74A3B2E501AAC0064A3A3 /* Kingfisher */; };
+		1DD9D7982E5BE92200136AAE /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD9D7972E5BE92200136AAE /* AppConfiguration.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -66,12 +64,11 @@
 		1D7E42882E569DBA00E9B690 /* HeroDetailScreen.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HeroDetailScreen.swift; sourceTree = "<group>"; };
 		1D7E428A2E56A34C00E9B690 /* XCUIApplication+DSL.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "XCUIApplication+DSL.swift"; sourceTree = "<group>"; };
 		1D9843132E4FC2A000CC3C9E /* Heroes */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = Heroes; sourceTree = "<group>"; };
-		1DA50D292E57CA5A00C49116 /* FixtureReader.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FixtureReader.swift; sourceTree = "<group>"; };
-		1DA531302E5919B700C49116 /* AppConfig */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppConfig; sourceTree = "<group>"; };
-		1DA531332E591D0400C49116 /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
-		1DA555352E5923C600C49116 /* NetworkStubsUITestUtils */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = NetworkStubsUITestUtils; sourceTree = "<group>"; };
 		1DD74A372E4FC6130064A3A3 /* HeroDetails */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = HeroDetails; sourceTree = "<group>"; };
 		1DD74A3D2E5028B50064A3A3 /* DesignSystem */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = DesignSystem; sourceTree = "<group>"; };
+		1DD9D7952E5BE71300136AAE /* AppConfig */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppConfig; sourceTree = "<group>"; };
+		1DD9D7962E5BE78600136AAE /* NetworkStubsUITestUtils */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = NetworkStubsUITestUtils; sourceTree = "<group>"; };
+		1DD9D7972E5BE92200136AAE /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,8 +152,8 @@
 		1D4B96F42E4EC08800505D4B /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				1DA555352E5923C600C49116 /* NetworkStubsUITestUtils */,
-				1DA531302E5919B700C49116 /* AppConfig */,
+				1DD9D7962E5BE78600136AAE /* NetworkStubsUITestUtils */,
+				1DD9D7952E5BE71300136AAE /* AppConfig */,
 				1D5A80992E53F427007D3A4E /* UnitTestingUtils */,
 				1DD74A3D2E5028B50064A3A3 /* DesignSystem */,
 				1DD74A372E4FC6130064A3A3 /* HeroDetails */,
@@ -197,7 +194,7 @@
 		1D7E42782E5699CA00E9B690 /* Configuration */ = {
 			isa = PBXGroup;
 			children = (
-				1DA531332E591D0400C49116 /* AppConfiguration.swift */,
+				1DD9D7972E5BE92200136AAE /* AppConfiguration.swift */,
 			);
 			path = Configuration;
 			sourceTree = "<group>";
@@ -205,7 +202,6 @@
 		1D7E42852E569D4500E9B690 /* Helpers */ = {
 			isa = PBXGroup;
 			children = (
-				1DA50D282E57CA2F00C49116 /* Fixtures */,
 				1DA50D272E57CA2200C49116 /* XCUIApplication */,
 			);
 			path = Helpers;
@@ -218,14 +214,6 @@
 				1D7E42832E569CC500E9B690 /* XCUIApplication+launchForUITestsWithStubs.swift */,
 			);
 			path = XCUIApplication;
-			sourceTree = "<group>";
-		};
-		1DA50D282E57CA2F00C49116 /* Fixtures */ = {
-			isa = PBXGroup;
-			children = (
-				1DA50D292E57CA5A00C49116 /* FixtureReader.swift */,
-			);
-			path = Fixtures;
 			sourceTree = "<group>";
 		};
 		1DA50D2D2E57D61800C49116 /* Tests */ = {
@@ -389,7 +377,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				1DA531352E591D0400C49116 /* AppConfiguration.swift in Sources */,
+				1DD9D7982E5BE92200136AAE /* AppConfiguration.swift in Sources */,
 				1D31F0522E4A8EDB002CF302 /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -410,8 +398,6 @@
 				1D7E42842E569CDD00E9B690 /* XCUIApplication+launchForUITestsWithStubs.swift in Sources */,
 				1D31F05B2E4A8F58002CF302 /* HeroesList_Screen_UITests.swift in Sources */,
 				1D7E42872E569D8D00E9B690 /* HeroesListScreen.swift in Sources */,
-				1DA50D2A2E57CA6700C49116 /* FixtureReader.swift in Sources */,
-				1DA531342E591D0400C49116 /* AppConfiguration.swift in Sources */,
 				1D7E42892E569DBA00E9B690 /* HeroDetailScreen.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

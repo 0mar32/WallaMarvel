@@ -9,13 +9,15 @@
 import OHHTTPStubs
 import OHHTTPStubsSwift
 
+/// This protocol is guideline how to stub a service
+/// See the documentation for ``StubsConfiguration``
 protocol APIServiceStub {
     associatedtype UseCase
     static func makeStubs(for useCase: UseCase)
 }
 
-public enum HeroesAPIServiceStubFactory: APIServiceStub {
-    public enum UseCase: String, Codable {
+enum HeroesAPIServiceStubFactory: APIServiceStub {
+    enum UseCase: String {
         case twoPages
         case secondPageOffline
         case offline
@@ -40,7 +42,11 @@ public enum HeroesAPIServiceStubFactory: APIServiceStub {
              isPath("/v1/public/characters") &&
              containsQueryParams(["offset": "0"])
         ) { _ in
-            return httpStubsResponse(for: "heroes_page_0.json").responseTime(0.25)
+<<<<<<<< Updated upstream:WallaMarvel/App/Configuration/Stubs/HeroesAPIServiceStub.swift
+            return jsonFixture("heroes_page_0.json").responseTime(0.25)
+========
+            return httpStubsResponse(for: HeroesFixture.Page.first.name).responseTime(0.25)
+>>>>>>>> Stashed changes:Modules/NetworkStubsUITestUtils/Sources/NetworkStubsUITestUtils/NetworkStubs/Stubs/HeroesAPIServiceStub.swift
         }
 
         // Page 1
@@ -50,19 +56,27 @@ public enum HeroesAPIServiceStubFactory: APIServiceStub {
              isPath("/v1/public/characters") &&
              containsQueryParams(["offset": "20"])
         ) { _ in
-            return httpStubsResponse(for: "heroes_page_1.json").responseTime(0.25)
+<<<<<<<< Updated upstream:WallaMarvel/App/Configuration/Stubs/HeroesAPIServiceStub.swift
+            return jsonFixture("heroes_page_1.json").responseTime(0.25)
+========
+            return httpStubsResponse(for: HeroesFixture.Page.second.name).responseTime(0.25)
+>>>>>>>> Stashed changes:Modules/NetworkStubsUITestUtils/Sources/NetworkStubsUITestUtils/NetworkStubs/Stubs/HeroesAPIServiceStub.swift
         }
     }
 
     private static func stubForSecondPageOffline() {
         // Page 0
         stub(condition:
-                isMethodGET() &&
+             isMethodGET() &&
              isHost("gateway.marvel.com") &&
              isPath("/v1/public/characters") &&
              containsQueryParams(["offset": "0"])
         ) { _ in
-            httpStubsResponse(for: "heroes_page_0.json").responseTime(0.25)
+<<<<<<<< Updated upstream:WallaMarvel/App/Configuration/Stubs/HeroesAPIServiceStub.swift
+            jsonFixture("heroes_page_0.json").responseTime(0.25)
+========
+            httpStubsResponse(for: HeroesFixture.Page.first.name).responseTime(0.25)
+>>>>>>>> Stashed changes:Modules/NetworkStubsUITestUtils/Sources/NetworkStubsUITestUtils/NetworkStubs/Stubs/HeroesAPIServiceStub.swift
         }
 
         // Page 1 - offline
@@ -89,12 +103,8 @@ public enum HeroesAPIServiceStubFactory: APIServiceStub {
         }
     }
 
-    private static func httpStubsResponse(
-        for fileName: String,
-        status: Int32 = 200
-    ) -> HTTPStubsResponse {
-        let name = fileName.hasSuffix(".json") ? String(fileName.dropLast(5)) : fileName
-        let url = fixtureUrl(for: name)
+    private static func jsonFixture(_ name: String, status: Int32 = 200) -> HTTPStubsResponse {
+        let url = Bundle.main.url(forResource: name, withExtension: nil)!
         return HTTPStubsResponse(fileURL: url, statusCode: status, headers: ["Content-Type": "application/json"])
     }
 }
