@@ -12,7 +12,7 @@ concurrency:
 env:
   PROJECT: WallaMarvel/WallaMarvel.xcodeproj
   APP_SCHEME: WallaMarvel
-  DESTINATION: platform=iOS Simulator,OS=latest,name=iPhone 16 Pro
+  DESTINATION: platform=iOS Simulator,OS=18.5,name=iPhone 16 Pro
   CONFIGURATION: Debug
   XCODE_VERSION: '16.4'
 
@@ -54,28 +54,33 @@ jobs:
             xcodebuild -resolvePackageDependencies -project "${PROJECT}"
           fi
 
-      - name: Build app (simulator)
+      - name: Run DesignSystemTests only
+        shell: bash
         run: |
           set -eo pipefail
-          if [ -n "${WORKSPACE:-}" ]; then
-            xcodebuild \
-              -workspace "${WORKSPACE}" \
-              -scheme "${APP_SCHEME}" \
-              -configuration "${CONFIGURATION}" \
-              -destination "${DESTINATION}" \
-              CODE_SIGNING_ALLOWED=NO \
-              build
-          else
-            xcodebuild \
-              -project "${PROJECT}" \
-              -scheme "${APP_SCHEME}" \
-              -configuration "${CONFIGURATION}" \
-              -destination "${DESTINATION}" \
-              CODE_SIGNING_ALLOWED=NO \
-              build
+
+          # Fail fast if the shared scheme doesn't exist
+          if ! xcodebuild -list -project "${PROJECT}" \
+            | awk '/Schemes:/{p=1;next} p && NF {sub(/^ +/,""); print} p && !NF {exit}' \
+            | grep -Fx "DesignSystemTests" >/dev/null; then
+            echo "❌ Shared scheme 'DesignSystemTests' not found. Make sure it's shared & committed."
+            xcodebuild -list -project "${PROJECT}" || true
+            exit 1
           fi
 
-      - name: Run per-module test schemes (project only)
+          xcodebuild test \
+            -project "${PROJECT}" \
+            -scheme "DesignSystemTests" \
+            -configuration "${CONFIGURATION}" \
+            -destination "${DESTINATION}" \
+            -testLanguage en \
+            -testRegion US \
+            -parallel-testing-enabled NO \
+            -maximum-parallel-testing-workers 1 \
+            -resultBundlePath "Unit-DesignSystemTests.xcresult" \
+            CODE_SIGNING_ALLOWED=NO
+
+      - name: Run module test schemes
         shell: bash
         run: |
           set -eo pipefail
@@ -109,6 +114,10 @@ jobs:
               -scheme "${scheme}" \
               -configuration "${CONFIGURATION}" \
               -destination "${DESTINATION}" \
+              -testLanguage en \
+              -testRegion US \
+              -parallel-testing-enabled NO \
+              -maximum-parallel-testing-workers 1 \
               -resultBundlePath "${bundle}" \
               CODE_SIGNING_ALLOWED=NO || fail=1
           done <<< "$SCHEMES"
@@ -125,6 +134,10 @@ jobs:
               -scheme "${APP_SCHEME}" \
               -configuration "${CONFIGURATION}" \
               -destination "${DESTINATION}" \
+              -testLanguage en \
+              -testRegion US \
+              -parallel-testing-enabled NO \
+              -maximum-parallel-testing-workers 1 \
               -resultBundlePath "${UI_BUNDLE}" \
               CODE_SIGNING_ALLOWED=NO
           else
@@ -133,6 +146,10 @@ jobs:
               -scheme "${APP_SCHEME}" \
               -configuration "${CONFIGURATION}" \
               -destination "${DESTINATION}" \
+              -testLanguage en \
+              -testRegion US \
+              -parallel-testing-enabled NO \
+              -maximum-parallel-testing-workers 1 \
               -resultBundlePath "${UI_BUNDLE}" \
               CODE_SIGNING_ALLOWED=NO
           fi
