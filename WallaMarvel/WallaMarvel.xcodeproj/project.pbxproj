@@ -69,7 +69,6 @@
 		1DD9D7952E5BE71300136AAE /* AppConfig */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = AppConfig; sourceTree = "<group>"; };
 		1DD9D7962E5BE78600136AAE /* NetworkStubsUITestUtils */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = NetworkStubsUITestUtils; sourceTree = "<group>"; };
 		1DD9D7972E5BE92200136AAE /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
-		1DD9D7992E5C001800136AAE /* HeroesCoreAPI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = HeroesCoreAPI; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -153,7 +152,6 @@
 		1D4B96F42E4EC08800505D4B /* Modules */ = {
 			isa = PBXGroup;
 			children = (
-				1DD9D7992E5C001800136AAE /* HeroesCoreAPI */,
 				1DD9D7962E5BE78600136AAE /* NetworkStubsUITestUtils */,
 				1DD9D7952E5BE71300136AAE /* AppConfig */,
 				1D5A80992E53F427007D3A4E /* UnitTestingUtils */,
