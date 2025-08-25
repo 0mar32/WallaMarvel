@@ -28,6 +28,7 @@
 		1DD74A392E4FECEB0064A3A3 /* HeroDetails in Frameworks */ = {isa = PBXBuildFile; productRef = 1DD74A382E4FECEB0064A3A3 /* HeroDetails */; };
 		1DD74A3C2E501AAC0064A3A3 /* Kingfisher in Frameworks */ = {isa = PBXBuildFile; productRef = 1DD74A3B2E501AAC0064A3A3 /* Kingfisher */; };
 		1DD9D7982E5BE92200136AAE /* AppConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD9D7972E5BE92200136AAE /* AppConfiguration.swift */; };
+		1DD9D79D2E5C568B00136AAE /* AppCoordinator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1DD9D79C2E5C568B00136AAE /* AppCoordinator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -70,6 +71,7 @@
 		1DD9D7962E5BE78600136AAE /* NetworkStubsUITestUtils */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = NetworkStubsUITestUtils; sourceTree = "<group>"; };
 		1DD9D7972E5BE92200136AAE /* AppConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppConfiguration.swift; sourceTree = "<group>"; };
 		1DD9D7992E5C001800136AAE /* HeroesCoreAPI */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = HeroesCoreAPI; sourceTree = "<group>"; };
+		1DD9D79C2E5C568B00136AAE /* AppCoordinator.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppCoordinator.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -186,6 +188,7 @@
 		1D7E42772E5699BB00E9B690 /* App */ = {
 			isa = PBXGroup;
 			children = (
+				1DD9D79C2E5C568B00136AAE /* AppCoordinator.swift */,
 				1D7E42782E5699CA00E9B690 /* Configuration */,
 				1D31F0502E4A8EDB002CF302 /* AppDelegate.swift */,
 				1D31F04E2E4A8EDB002CF302 /* Assets.xcassets */,
@@ -379,6 +382,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				1DD9D79D2E5C568B00136AAE /* AppCoordinator.swift in Sources */,
 				1DD9D7982E5BE92200136AAE /* AppConfiguration.swift in Sources */,
 				1D31F0522E4A8EDB002CF302 /* AppDelegate.swift in Sources */,
 			);
