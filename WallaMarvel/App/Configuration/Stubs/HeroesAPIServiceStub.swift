@@ -9,6 +9,8 @@
 import OHHTTPStubs
 import OHHTTPStubsSwift
 
+/// This protocol is guideline how to stub a service
+/// See the documentation for ``StubsConfiguration``
 protocol APIServiceStub {
     associatedtype UseCase
     static func makeStubs(for useCase: UseCase)
@@ -40,7 +42,11 @@ enum HeroesAPIServiceStubFactory: APIServiceStub {
              isPath("/v1/public/characters") &&
              containsQueryParams(["offset": "0"])
         ) { _ in
+<<<<<<<< Updated upstream:WallaMarvel/App/Configuration/Stubs/HeroesAPIServiceStub.swift
             return jsonFixture("heroes_page_0.json").responseTime(0.25)
+========
+            return httpStubsResponse(for: HeroesFixture.Page.first.name).responseTime(0.25)
+>>>>>>>> Stashed changes:Modules/NetworkStubsUITestUtils/Sources/NetworkStubsUITestUtils/NetworkStubs/Stubs/HeroesAPIServiceStub.swift
         }
 
         // Page 1
@@ -50,19 +56,27 @@ enum HeroesAPIServiceStubFactory: APIServiceStub {
              isPath("/v1/public/characters") &&
              containsQueryParams(["offset": "20"])
         ) { _ in
+<<<<<<<< Updated upstream:WallaMarvel/App/Configuration/Stubs/HeroesAPIServiceStub.swift
             return jsonFixture("heroes_page_1.json").responseTime(0.25)
+========
+            return httpStubsResponse(for: HeroesFixture.Page.second.name).responseTime(0.25)
+>>>>>>>> Stashed changes:Modules/NetworkStubsUITestUtils/Sources/NetworkStubsUITestUtils/NetworkStubs/Stubs/HeroesAPIServiceStub.swift
         }
     }
 
     private static func stubForSecondPageOffline() {
         // Page 0
         stub(condition:
-                isMethodGET() &&
+             isMethodGET() &&
              isHost("gateway.marvel.com") &&
              isPath("/v1/public/characters") &&
              containsQueryParams(["offset": "0"])
         ) { _ in
+<<<<<<<< Updated upstream:WallaMarvel/App/Configuration/Stubs/HeroesAPIServiceStub.swift
             jsonFixture("heroes_page_0.json").responseTime(0.25)
+========
+            httpStubsResponse(for: HeroesFixture.Page.first.name).responseTime(0.25)
+>>>>>>>> Stashed changes:Modules/NetworkStubsUITestUtils/Sources/NetworkStubsUITestUtils/NetworkStubs/Stubs/HeroesAPIServiceStub.swift
         }
 
         // Page 1 - offline

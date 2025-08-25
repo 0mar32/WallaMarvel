@@ -17,39 +17,33 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
         AppConfiguration.configureOnLaunch()
 
-        // Create UIWindow manually
+        // TODO: Change this to Coordinator pattern
+        setRootViewController()
+
+        return true
+    }
+
+    // TODO: Define an AppCoordinator
+    func setRootViewController() {
         let window = UIWindow(frame: UIScreen.main.bounds)
 
-        // Setup dependencies for the HeroesListFactory
-        let repository = HeroesRepository(
-            apiService: HeroesAPIService(),
-            storageService: HeroesStorageService(
-                persistence: PersistenceController(
-                    inMemory: AppEnvironment.isRunningUITests
-                )
-            )
-        )
-        let interactor = HeroesPaginationInteractor(
-            repository: repository
-        )
+        // in UITests we want to store in Memory, instead of disk
+        let repository = HeroesRepository()
+        let interactor = HeroesPaginationInteractor(repository: repository)
         let factory = HeroesListFactory(dependencies: .init(interactor: interactor))
 
-        // Create root VC
         let rootNavigationController = UINavigationController()
         let rootVC = factory.makeViewController { hero in
-            rootNavigationController
-                .pushViewController(
-                    HeroesDetailsFactory().makeViewController(hero: hero),
-                    animated: true
-                )
+            let HeroesDetailsFactory = HeroesDetailsFactory()
+            rootNavigationController.pushViewController(
+                HeroesDetailsFactory.makeViewController(hero: hero),
+                animated: true
+            )
         }
         rootNavigationController.viewControllers = [rootVC]
         window.rootViewController = rootNavigationController
         window.makeKeyAndVisible()
 
         self.window = window
-
-        return true
     }
 }
-

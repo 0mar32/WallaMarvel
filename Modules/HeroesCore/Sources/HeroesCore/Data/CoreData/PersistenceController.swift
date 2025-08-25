@@ -7,6 +7,11 @@
 
 import Foundation
 import CoreData
+import AppConfig
+
+protocol PersistenceControllerProtocol {
+    
+}
 
 import CoreData
 

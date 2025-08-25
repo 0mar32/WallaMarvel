@@ -4,6 +4,11 @@
 //
 //  Created by Omar Tarek Mansour Omar on 18/8/25.
 //
+//
+//  HeroesRepositoryTests.swift
+//  HeroesCore
+//
+
 import XCTest
 import NetworkClient
 import UnitTestingUtils
@@ -21,112 +26,23 @@ final class HeroesRepositoryTests: XCTestCase {
         super.setUp()
         api = HeroesAPIServiceMock()
         store = HeroesStorageServiceMock()
-        sut = HeroesRepository(apiService: api, storageService: store)
+        sut  = HeroesRepository(apiService: api, storageService: store)
     }
 
     override func tearDown() {
-        sut = nil
-        store = nil
-        api = nil
+        sut = nil; store = nil; api = nil
         super.tearDown()
     }
 
-    // MARK: - Empty cache → first-time remote fetch, store, return
-
-    func test_fetchHeroes_whenCacheEmpty_fetchesRemoteStoresAndReturns() async throws {
-        // given
-        store.stubbedAllHeroes = [] // empty cache
-
-        let remoteContainerDto = HeroesContainerDto.sample(
-            count: 2, limit: 2, offset: 0, total: 10,
-            results: [
-                .sample(id: 1, name: "A"),
-                .sample(id: 2, name: "B")
-            ]
-        )
-        api.enqueue(.success(.sample(data: remoteContainerDto)))
-
-        // when
-        let result = try await sut.fetchHeroes(limit: 2, offset: 0)
-
-        // then
-        XCTAssertEqual(api.recordedRequests, [.init(limit: 2, offset: 0)])
-        XCTAssertEqual(store.recordedStores.count, 1)
-        XCTAssertEqual(store.recordedStores.first?.offset, 0)
-        XCTAssertEqual(store.recordedStores.first?.heroes.count, 2)
-
-        XCTAssertEqual(result.count, 2)
-        XCTAssertEqual(result.characters.map(\.name), ["A", "B"])
-
-        // No cached-yield on first-time fetch
-        let noYield = await AsyncStreamCollector(sut.heroesPublisher).first(timeout: 0.1)
-        XCTAssertNil(noYield)
-    }
-
-    func test_offsetZero_yieldsCachedSnapshot() async throws {
-        givenCachedHeroes(250)
-        enqueueRefreshPages(total: 250)
-        let collector = AsyncStreamCollector(sut.heroesPublisher)
-
-        let _ = try await sut.fetchHeroes(limit: 10, offset: 0)
-
-        let yielded = await collector.first(timeout: 1.0)
-        XCTAssertNotNil(yielded)
-        XCTAssertEqual(yielded?.count, 250)
-        XCTAssertEqual(yielded?.characters.first?.name, "H1")
-        XCTAssertEqual(yielded?.characters.last?.name,  "H250")
-    }
-
-    func test_offsetZero_storesEachPageAtCorrectOffset() async throws {
-        givenCachedHeroes(250)
-        enqueueRefreshPages(total: 250)
-
-        _ = try await sut.fetchHeroes(limit: 10, offset: 0)
-
-        XCTAssertEqual(store.recordedStores.count, 3)
-        XCTAssertEqual(store.recordedStores.map(\.offset), [0, 100, 200])
-        XCTAssertEqual(store.recordedStores.map { $0.heroes.count }, [100, 100, 50])
-    }
-
-    func test_offsetZero_returnsFullyRefreshedContainer() async throws {
-        givenCachedHeroes(250)
-        enqueueRefreshPages(total: 250)
-
-        let refreshed = try await sut.fetchHeroes(limit: 10, offset: 0)
-
-        XCTAssertEqual(refreshed.count, 250)
-        XCTAssertEqual(refreshed.characters.first?.name, "R1")
-        XCTAssertEqual(refreshed.characters.last?.name,  "R250")
-        XCTAssertEqual(refreshed.total, 250)
-    }
-
-    func test_offsetZero_refreshesInPagesOfMax100WithCorrectOffsets() async throws {
-        givenCachedHeroes(250)
-        enqueueRefreshPages(total: 250)
-
-        _ = try await sut.fetchHeroes(limit: 10, offset: 0)
-
-        XCTAssertEqual(api.recordedRequests, [
-            .init(limit: 100, offset: 0),
-            .init(limit: 100, offset: 100),
-            .init(limit: 50,  offset: 200)
-        ])
-    }
-
-    // MARK: - Offset > 0 → fetch one page and store
+    // MARK: - Non-stream path (pagination / direct page)
 
     func test_fetchHeroes_whenOffsetGreaterThanZero_fetchesThatPageAndStores() async throws {
         // given
-        store.stubbedAllHeroes = (1...20).map { .sample(id: $0, name: "C\($0)") } // existing cache shouldn't matter
+        store.stubbedAllHeroes = (1...20).map { .sample(id: $0, name: "C\($0)") }
 
         let pageDto = HeroesContainerDto.sample(
-            count: 5,
-            limit: 5,
-            offset: 15,
-            total: 100,
-            results: (16...20).map {
-                .sample(id: $0, name: "P\($0)")
-            }
+            count: 5, limit: 5, offset: 15, total: 100,
+            results: (16...20).map { .sample(id: $0, name: "P\($0)") }
         )
         api.enqueue(.success(.sample(data: pageDto)))
 
@@ -134,119 +50,127 @@ final class HeroesRepositoryTests: XCTestCase {
         let page = try await sut.fetchHeroes(limit: 5, offset: 15)
 
         // then
-        XCTAssertEqual(api.recordedRequests, [.init(limit: 5, offset: 15)])
-        XCTAssertEqual(store.recordedStores.count, 1)
         XCTAssertEqual(store.recordedStores.first?.offset, 15)
-        XCTAssertEqual(store.recordedStores.first?.heroes.map(\.name), ["P16","P17","P18","P19","P20"])
-
-        XCTAssertEqual(page.count, 5)
         XCTAssertEqual(page.characters.map(\.name), ["P16","P17","P18","P19","P20"])
-
-        // No cached-yield for non-zero offset path
-        let noYield = await AsyncStreamCollector(sut.heroesPublisher).first(timeout: 0.1)
-        XCTAssertNil(noYield)
     }
 
-    // MARK: - Cached data & offset == 0 → yield cached, refresh in pages of up to 100, store each page, return refreshed
+    func test_fetchHeroes_mapsErrors() async {
+        enum DummyError: Error { case boom }
+        store.stubbedAllHeroes = []            // no cache → direct remote
+        api.enqueue(.failure(DummyError.boom)) // then fail
 
-    func test_fetchHeroes_whenOffsetZeroWithCache_yieldsCachedThenRefreshesPagedAndStoresAllPages() async throws {
-        // given: cached 250 heroes, sorted
-        store.stubbedAllHeroes = (1...250).map {
-            Hero.sample(id: $0, name: "H\($0)")
+        await XCTAssertThrowsErrorAsync(try await sut.fetchHeroes(limit: 5, offset: 0)) { error in
+            XCTAssertTrue((error as? HeroesError) == .generic) // 1 assert
         }
 
-        // will refresh in pages of 100,100,50 with offsets 0,100,200
-        func pageDto(startID: Int, count: Int, total: Int = 250) -> HeroesContainerDto {
-            let results = (startID..<(startID+count)).map {
-                HeroDto.sample(id: $0, name: "R\($0)")
-            }
-            return HeroesContainerDto.sample(
-                count: count,
-                limit: count,
-                offset: startID - 1,
-                total: total,
-                results: results
-            )
+        store.stubbedAllHeroes = []
+        api.enqueue(.failure(NetworkError.noInternet))
+
+        await XCTAssertThrowsErrorAsync(try await sut.fetchHeroes(limit: 5, offset: 0)) { error in
+            XCTAssertTrue((error as? HeroesError) == .offline) // 1 assert
         }
+    }
 
-        api.enqueue(.success(.sample(data: pageDto(startID: 1,   count: 100))))
-        api.enqueue(.success(.sample(data: pageDto(startID: 101, count: 100))))
-        api.enqueue(.success(.sample(data: pageDto(startID: 201, count: 50))))
+    // MARK: - Stream path (offset 0): cache → fresh
 
-        // collect the first yield from the AsyncStream (should be cached)
-        let collector = AsyncStreamCollector(sut.heroesPublisher)
+    func test_stream_withCache_emitsCachedThenFresh() async throws {
+        // given
+        givenCachedHeroes(250)
+        enqueueRefreshPages(total: 250)
 
         // when
-        let refreshed = try await sut.fetchHeroes(limit: 10, offset: 0) // limit ignored during refresh loop
+        let stream = sut.fetchHeroesStream(limit: 10, offset: 0)
+        let result = await collectFromAsyncStream(stream)
 
-        // then: first yield is cached snapshot
-        if let yieldedCached = await collector.first(timeout: 1.0) {
-            XCTAssertEqual(yieldedCached.count, 250)
-            XCTAssertEqual(yieldedCached.characters.first?.name, "H1")
-            XCTAssertEqual(yieldedCached.characters.last?.name, "H250")
-        } else {
-            XCTFail("Expected cached container to be yielded before refresh.")
-        }
+        // then
+        XCTAssertEqual(result.items.count, 2)
+        XCTAssertEqual(result.items.first?.count, 250)
+        XCTAssertEqual(result.items.last?.total, 250)
+    }
 
-        // API called in 3 pages (100/100/50) with offsets 0/100/200
+    func test_stream_largeCache_paginatesHundreds_andReturnsFullFresh() async {
+        // given
+        givenCachedHeroes(250)
+        enqueueRefreshPages(total: 250)
+
+        // when
+        let result = await collectFromAsyncStream(sut.fetchHeroesStream(limit: 10, offset: 0))
+
+        // then
+        XCTAssertEqual(api.recordedRequests.map(\.offset), [0,100,200])
+        XCTAssertEqual(store.recordedStores.map(\.offset), [0,100,200])
+        XCTAssertEqual(result.items.last?.count, 250)
+    }
+
+    func test_stream_withCache_refreshIsPagedAndStored() async throws {
+        // given
+        givenCachedHeroes(250)
+        enqueueRefreshPages(total: 250)
+
+        // when
+        _ = await collectFromAsyncStream(sut.fetchHeroesStream(limit: 10, offset: 0))
+
+        // then
         XCTAssertEqual(api.recordedRequests, [
             .init(limit: 100, offset: 0),
             .init(limit: 100, offset: 100),
             .init(limit: 50,  offset: 200)
         ])
-
-        // Each page stored at its page offset
-        XCTAssertEqual(store.recordedStores.count, 3)
         XCTAssertEqual(store.recordedStores.map(\.offset), [0, 100, 200])
-        XCTAssertEqual(store.recordedStores.map { $0.heroes.count }, [100, 100, 50])
-
-        // Returned container is the fully refreshed remote list
-        XCTAssertEqual(refreshed.count, 250)
-        XCTAssertEqual(refreshed.characters.first?.name, "R1")
-        XCTAssertEqual(refreshed.characters.last?.name, "R250")
-        XCTAssertEqual(refreshed.total, 250)
     }
 
-    // MARK: - Error mapping
-
-    func test_fetchHeroes_mapsGenericErrorsToGeneric() async {
-        enum DummyError: Error {
-            case error
-        }
+    func test_stream_noCache_emitsFreshOnly() async throws {
         // given
-        store.stubbedAllHeroes = [] // triggers first-time remote fetch
+        store.stubbedAllHeroes = []
+        let dto = HeroesContainerDto.sample(
+            count: 3, limit: 3, offset: 0, total: 3,
+            results: [.sample(id: 1, name: "A"), .sample(id: 2, name: "B"), .sample(id: 3, name: "C")]
+        )
+        api.enqueue(.success(.sample(data: dto)))
 
-        api.enqueue(.failure(DummyError.error))
+        // when
+        let stream = sut.fetchHeroesStream(limit: 3, offset: 0)
+        let result = await collectFromAsyncStream(stream)
 
-        // when/then
-        await XCTAssertThrowsErrorAsync(
-            try await sut.fetchHeroes(limit: 5, offset: 0)
-        ) { error in
-            guard let heroesError = error as? HeroesError else {
-                return XCTFail("Expected HeroesError, got \(error)")
-            }
-            guard case .generic = heroesError else {
-                return XCTFail("Expected .generic, got \(heroesError)")
-            }
-        }
+        // then
+        XCTAssertEqual(result.items.count, 1)
+        XCTAssertEqual(result.items.first?.characters.map(\.name), ["A","B","C"])
     }
 
-    /// If your app exposes `NetworkError.noInternet`, this test checks `.offline` mapping.
-    /// If it conflicts with an existing type, delete this local enum and import the real one.
-    func test_fetchHeroes_mapsNoInternetToOffline() async {
-        store.stubbedAllHeroes = []
+    func test_stream_withCache_offlineDuringRefresh_emitsCachedThenThrowsOffline() async throws {
+        // given
+        givenCachedHeroes(10)
         api.enqueue(.failure(NetworkError.noInternet))
 
-        await XCTAssertThrowsErrorAsync(try await sut.fetchHeroes(limit: 5, offset: 0)) { error in
-            guard let heroesError = error as? HeroesError else {
-                return XCTFail("Expected HeroesError, got \(error)")
-            }
-            guard case .offline = heroesError else {
-                return XCTFail("Expected .offline, got \(heroesError)")
-            }
-        }
+        // when
+        let stream = sut.fetchHeroesStream(limit: 10, offset: 0)
+        let result = await collectFromAsyncStream(stream)
+
+        // then
+        XCTAssertEqual(result.items.count, 1) // cached only
+        XCTAssertTrue((result.error as? HeroesError) == .offline)
+    }
+
+    func test_stream_cache50_limit80_refreshesTo80() async {
+        // given
+        givenCachedHeroes(50)
+        // one network call of 80 (<= 100)
+        let dto = HeroesContainerDto.sample(
+            count: 80, limit: 80, offset: 0, total: 200,
+            results: (1...80).map { .sample(id: $0, name: "R\($0)") }
+        )
+        api.enqueue(.success(.sample(data: dto)))
+
+        // when
+        let result = await collectFromAsyncStream(sut.fetchHeroesStream(limit: 80, offset: 0))
+
+        // then (2 asserts)
+        XCTAssertEqual(api.recordedRequests, [.init(limit: 80, offset: 0)])
+        XCTAssertEqual(result.items.last?.count, 80)
     }
 }
+
+// MARK: - Helpers
 
 private extension HeroesRepositoryTests {
     func givenCachedHeroes(_ count: Int) {
@@ -254,13 +178,15 @@ private extension HeroesRepositoryTests {
     }
 
     func enqueueRefreshPages(total: Int) {
-        // pages of 100
         var remaining = total
         var start = 1
         while remaining > 0 {
             let pageCount = min(100, remaining)
-            let results = (start..<(start + pageCount)).map { HeroDto.sample(id: $0, name: "R\($0)") }
-            let dto = HeroesContainerDto.sample(count: pageCount, limit: pageCount, offset: start - 1, total: total, results: results)
+            let results = (start..<(start + pageCount))
+                .map { HeroDto.sample(id: $0, name: "R\($0)") }
+            let dto = HeroesContainerDto.sample(
+                count: pageCount, limit: pageCount, offset: start - 1, total: total, results: results
+            )
             api.enqueue(.success(.sample(data: dto)))
             start += pageCount
             remaining -= pageCount

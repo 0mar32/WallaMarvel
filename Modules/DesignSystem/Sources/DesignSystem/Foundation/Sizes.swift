@@ -9,15 +9,20 @@ import Foundation
 
 public enum Sizes {
     public enum Avatar {
-        static let small: CGFloat = Primitives.Units.u40
-        static let medium: CGFloat = Primitives.Units.u60
-        static let large: CGFloat = Primitives.Units.u80
+        public static let small: CGFloat = Primitives.Units.u40
+        public static let medium: CGFloat = Primitives.Units.u60
+        public static let large: CGFloat = Primitives.Units.u80
     }
 
     public enum Icon {
-        static let small: CGFloat = Primitives.Units.u16
-        static let medium: CGFloat = Primitives.Units.u20
-        static let large: CGFloat = Primitives.Units.u24
+        public static let small: CGFloat = Primitives.Units.u16
+        public static let medium: CGFloat = Primitives.Units.u20
+        public static let large: CGFloat = Primitives.Units.u24
+    }
+
+    public enum Thumbnail {
+        public static let small: CGFloat = Primitives.Units.u96
+        public static let medium: CGFloat = Primitives.Units.u192
     }
 }
 

@@ -21,7 +21,7 @@ struct HeroDetailView: View {
     var body: some View {
         GeometryReader { geo in
             ScrollView {
-                VStack(spacing: 16) {
+                VStack(spacing: Padding.xLarge) {
                     switch viewModel.state {
                     case .idle:
                         ProgressView()
@@ -52,7 +52,7 @@ struct HeroDetailView: View {
                             )
                             .accessibilityIdentifier(AccessibilityID.seriesSection)
                         }
-                        Spacer(minLength: 32)
+                        Spacer(minLength: Padding.xxxLarge)
                     }
                 }
             }
@@ -69,7 +69,10 @@ struct HeroDetailView: View {
         KFImage(url)
             .placeholder {
                 ProgressView()
-                    .frame(maxWidth: .infinity, maxHeight: 200)
+                    .frame(
+                        maxWidth: .infinity,
+                        maxHeight: Sizes.Thumbnail.medium
+                    )
                     .accessibilityIdentifier(AccessibilityID.imagePlaceholder)
             }
             .cancelOnDisappear(true)
@@ -88,7 +91,7 @@ struct HeroDetailView: View {
                 Image(systemName: SFIcon.photo.systemName)
                     .resizable()
                     .scaledToFit()
-                    .frame(width: 100, height: 100)
+                    .frame(width: Sizes.Thumbnail.small, height: Sizes.Thumbnail.small)
                     .foregroundColor(.gray)
                     .opacity(url == nil ? 1 : 0)
             )
@@ -100,13 +103,13 @@ struct HeroDetailView: View {
     private func heroInfo(name: String, description: String) -> some View {
         VStack(alignment: .leading, spacing: 8) {
             Text(name)
-                .font(.largeTitle)
+                .font(TextStyles.heading3)
                 .fontWeight(.heavy)
                 .transition(.move(edge: .top).combined(with: .opacity))
                 .accessibilityIdentifier(AccessibilityID.title)
 
             Text(description)
-                .font(.body)
+                .font(TextStyles.body)
                 .foregroundColor(.secondary)
                 .transition(.opacity)
                 .accessibilityIdentifier(AccessibilityID.description)

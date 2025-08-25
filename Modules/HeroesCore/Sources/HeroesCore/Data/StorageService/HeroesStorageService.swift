@@ -7,6 +7,7 @@
 
 import Foundation
 import CoreData
+import AppConfig
 
 // MARK: - Storage Service Protocol
 public protocol HeroesStorageServiceProtocol {
@@ -18,8 +19,16 @@ public protocol HeroesStorageServiceProtocol {
 public class HeroesStorageService: HeroesStorageServiceProtocol {
     private let persistence: PersistenceController
 
-    public init(persistence: PersistenceController = .shared) {
+    public init(persistence: PersistenceController) {
         self.persistence = persistence
+    }
+
+    public convenience init(isMemoryStorage: Bool = AppEnvironment.isRunningUITests) {
+        if isMemoryStorage {
+            self.init(persistence: .init(inMemory: isMemoryStorage))
+        } else {
+            self.init(persistence: .shared)
+        }
     }
 
     // Fetch on main thread (viewContext)

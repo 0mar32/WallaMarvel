@@ -28,6 +28,8 @@ enum NetworkStubs {
         // Pick passed UseCases
         if let json = env[EnvironmentArguments.stubsConfig],
            let data = json.data(using: .utf8),
+           // no hurt here from initializing JSONDecoder() on the fly, because this function is going to be called once per lunch
+           // so we are not in case of creating it in each use unnecessary
            let stubConfig = try? JSONDecoder().decode(StubsConfiguration.self, from: data) {
 
             if let parsed = HeroesAPIServiceStubFactory.UseCase(rawValue: stubConfig.heroesAPIServiceCase) {

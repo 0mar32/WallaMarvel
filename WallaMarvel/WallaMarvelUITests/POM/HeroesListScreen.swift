@@ -15,36 +15,23 @@ enum HeroesListIDs {
     static let retryButton = "HeroesList_RetryButton"
     static let heroCell = "HeroCell_"
     static let paginationSpinner = "HeroesList_Loading"
-    static func heroCell(_ id: Int) -> String { "\(heroCell)\(id)" }
+    static func heroCell(_ id: String) -> String { "\(heroCell)\(id)" }
 }
 
 struct HeroesListScreen {
     let app: XCUIApplication
 
     private var heroesContainer: XCUIElement {
-        let byId = app.query(.any, match: .idEquals(HeroesListIDs.table)).firstMatch
-        if byId.exists { return byId }
-        if app.tables.count > 0 { return app.tables.firstMatch }
-        if app.collectionViews.count > 0 { return app.collectionViews.firstMatch }
-        if app.scrollViews.count > 0 { return app.scrollViews.firstMatch }
-        return app.descendants(matching: .any).firstMatch
+        return app.query(.any, match: .idEquals(HeroesListIDs.table)).firstMatch
     }
-
-    @discardableResult
-    func waitLoaded(timeout: TimeInterval = 8) -> Self {
-        let firstRow = app.element(idBeginsWith: HeroesListIDs.heroCell)
-        XCTAssertTrue(firstRow.waitForExistence(timeout: timeout), "Heroes list didn't appear")
-        return self
-    }
-
 
     func visibleCellCount() -> Int {
         let rows = app.query(.any, match: .idBegins(with: HeroesListIDs.heroCell))
         return rows.count
     }
 
-    func tapFirstHeroCell() {
-        let firstHeroRow = app.element(idBeginsWith: HeroesListIDs.heroCell)
+    func tapHeroCell(with title: String) {
+        let firstHeroRow = app.element(idBeginsWith: HeroesListIDs.heroCell(title))
         XCTAssertTrue(firstHeroRow.exists, "First hero row not found")
         firstHeroRow.tap()
     }
@@ -73,21 +60,6 @@ struct HeroesListScreen {
     }
     var retryColumnElement: XCUIElement {
         app.query(.any, match: .idEquals(HeroesListIDs.retryColumn)).firstMatch
-    }
-
-    // MARK: - Waiters
-    @discardableResult
-    func waitForRetryRow(timeout: TimeInterval = 8) -> XCUIElement {
-        let el = retryRowElement
-        XCTAssertTrue(el.waitForExistence(timeout: timeout), "Retry row didn’t appear")
-        return el
-    }
-
-    @discardableResult
-    func waitForRetryColumn(timeout: TimeInterval = 8) -> XCUIElement {
-        let el = retryColumnElement
-        XCTAssertTrue(el.waitForExistence(timeout: timeout), "Retry column didn’t appear")
-        return el
     }
 
     // MARK: - Actions
