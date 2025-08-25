@@ -18,13 +18,3 @@ extension StoryItemDto {
         return Story(name: name, type: type)
     }
 }
-
-extension StoryEntity {
-    static func fromDomain(_ story: Story, context: NSManagedObjectContext) -> StoryEntity {
-        let entity = StoryEntity(context: context)
-        entity.name = story.name
-        entity.type = story.type
-        return entity
-    }
-    func toDomainModel() -> Story { Story(name: name ?? "", type: type ?? "") }
-}

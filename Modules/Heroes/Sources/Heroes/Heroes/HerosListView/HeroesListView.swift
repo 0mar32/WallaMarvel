@@ -8,6 +8,7 @@ struct HeroesListView: View {
     let onHeroSelected: (Hero) -> Void
 
     // MARK: - Init
+
     init(
         viewModel: HeroesListViewModel,
         onHeroSelected: @escaping (Hero) -> Void
@@ -17,21 +18,27 @@ struct HeroesListView: View {
     }
 
     // MARK: - Body
+
     var body: some View {
         NavigationView {
             content
                 .navigationTitle(viewModel.state.viewTitle)
-                .onAppear {
-                    Task { await viewModel.loadInitialHeroes() }
-                }
-                .onChange(of: viewModel.state) { newState in
-                    if case let .error(message, _) = newState { errorAlert = message }
+                .onChange(of: viewModel.alert) { error in
+                    errorAlert = error
                 }
                 .alert(item: $errorAlert) { error in
                     Alert(title: Text(error.title),
-                          message: Text(error.text),
-                          dismissButton: .default(Text("OK")))
+                          message: Text(error.message),
+                          dismissButton: .default(Text(error.actionTitle)))
                 }
+        }
+        // this need to be on the NavigationView to avoid auto cancelling the stream when the screen state changes from loading to loaded
+        // loadInitialHeroesStream is AsyncStream that return cached data -> remote data
+        // when cached is returned the view caches from ProgressView to the List which makes the the as cancel before getting the remote data.
+        // so we need to keep the stream live on the level of NavigationView
+        // other wise we can move this to onAppear and make the VM own the task to control the cancellation, but for now this one works well
+        .task {
+            await viewModel.loadInitialHeroesStream()
         }
         .accessibilityIdentifier(AccessibilityID.screen)
     }
@@ -48,14 +55,16 @@ struct HeroesListView: View {
                 .frame(maxWidth: .infinity, maxHeight: .infinity)
                 .accessibilityIdentifier(AccessibilityID.loading)
 
-        case let .loaded(heroes, isLoadingMore, paginationError):
-            heroList(heroes, showFooter: isLoadingMore, showOfflineRetry: paginationError)
+        case let .loaded(model):
+            heroList(
+                model.heroes,
+                isLoadingMore: model.isLoadingMore,
+                error: model.listError
+            )
 
-        case let .error(_, heroes):
-            VStack {
-                if !heroes.isEmpty {
-                    heroList(heroes, showFooter: false, showOfflineRetry: false)
-                }
+        case let .error(error, heroes):
+            if !heroes.isEmpty {
+                heroList(heroes, error: error)
             }
         }
     }
@@ -64,11 +73,12 @@ struct HeroesListView: View {
     @ViewBuilder
     private func heroList(
         _ heroes: [HeroListItemUIModel],
-        showFooter: Bool,
-        showOfflineRetry: Bool
+        isLoadingMore: Bool? = nil,
+        error: ErrorMessageUIModel? = nil
     ) -> some View {
-        if showOfflineRetry, heroes.isEmpty {
-            offlineRetryColumn()
+
+        if let error, heroes.isEmpty {
+            offlineRetryColumn(errorModel: error)
                 .padding()
                 .fixedSize()
                 .accessibilityIdentifier(AccessibilityID.retryColumn)
@@ -85,45 +95,44 @@ struct HeroesListView: View {
                             style: .highlighted(borderColor: Colors.Primary.lightBlue)
                         )
                     }
-                    .accessibilityIdentifier(AccessibilityID.heroCell(hero.id))
+                    .accessibilityIdentifier(AccessibilityID.heroCell(hero.name))
                     .fadeSlideIn(index: index)
-                    .onAppear {
-                        Task { await viewModel.loadMoreHeroesIfNeeded(currentHero: hero) }
+                    .task {
+                        await viewModel.loadMoreHeroesIfNeeded(currentHero: hero)
                     }
                 }
 
-                if showFooter {
-                    HStack {
-                        Spacer()
-                        ProgressView()
-                            .accessibilityIdentifier(AccessibilityID.paginationSpinner)
-                        Spacer()
+                // this VStack is important for the loading spinner to work
+                // without it SwiftUI sees the subtree view inside the if body has the same id all the time which makes
+                // a problem with cell reusability that makes the spinner appears only the first time
+                // but now swiftUI is able to identify that is a different subtree view
+                // an other solution would be use .id(UUID) so swiftUI can no it is a new view each time we displays it.
+                // it is not gonna have performance problem in that case, but it is not a good practice in general
+                VStack {
+                    if isLoadingMore == true {
+                        HStack {
+                            Spacer()
+                            ProgressView()
+                                .accessibilityIdentifier(AccessibilityID.paginationSpinner)
+                            Spacer()
+                        }
+                    } else if let error, !heroes.isEmpty {
+                        offlineRetryRow(errorModel: error)
+                            .accessibilityIdentifier(AccessibilityID.retryRow)
                     }
-                    .id(UUID())
-                } else if showOfflineRetry, !heroes.isEmpty {
-                    offlineRetryRow()
-                        .accessibilityIdentifier(AccessibilityID.retryRow)
                 }
             }
             .accessibilityIdentifier(AccessibilityID.table)
         }
     }
 
-    @ViewBuilder
-    private func heroList(
-        _ heroes: [HeroListItemUIModel],
-        showFooter: Bool
-    ) -> some View {
-        heroList(heroes, showFooter: showFooter, showOfflineRetry: false)
-    }
-
     // MARK: - Retry Views
     @ViewBuilder
-    private func offlineRetryRow() -> some View {
+    private func offlineRetryRow(errorModel: ErrorMessageUIModel) -> some View {
         HorizontalTitleWithAction(
-            title: "No internet connection.",
+            title: errorModel.title,
             icon: .noConnection,
-            buttonTitle: "Retry"
+            buttonTitle: errorModel.actionTitle
         ) {
             Task { await viewModel.retryPagination() }
         }
@@ -131,13 +140,13 @@ struct HeroesListView: View {
     }
 
     @ViewBuilder
-    private func offlineRetryColumn() -> some View {
+    private func offlineRetryColumn(errorModel: ErrorMessageUIModel) -> some View {
         VerticalTitleWithAction(
-            title: "No internet connection.",
+            title: errorModel.title,
             icon: .noConnection,
-            buttonTitle: "Retry"
+            buttonTitle: errorModel.actionTitle
         ) {
-            Task { await viewModel.loadInitialHeroes() }
+            Task { await viewModel.loadInitialHeroesStream() }
         }
         .accessibilityHint("Tap to retry loading heroes")
     }

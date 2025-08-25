@@ -5,53 +5,80 @@
 //  Created by Omar Tarek Mansour Omar on 20/8/25.
 //
 
+import XCTest
+
 @testable import HeroesCore
 
 final class PaginationInteractorMock: HeroesPaginationInteractorProtocol, @unchecked Sendable {
 
-    // Publisher plumbing
-    private let stream: AsyncStream<HeroesContainer>
-    private let continuation: AsyncStream<HeroesContainer>.Continuation
-
-    init() {
-        var c: AsyncStream<HeroesContainer>.Continuation!
-        self.stream = AsyncStream { cont in c = cont }
-        self.continuation = c
+    // MARK: - Scripting initial stream
+    enum StreamPlan {
+        case none
+        case error(Error)
+        case cacheOnly(HeroesContainer)
+        case freshOnly(HeroesContainer)
+        case cacheThenFresh(HeroesContainer, HeroesContainer)
+        case cacheThenError(HeroesContainer, Error)
+        case cacheThenFreshGated(HeroesContainer, HeroesContainer, CallGate) // yield cache, then wait, then fresh
     }
 
-    var hasMorePages: Bool { true } // VM doesn’t consult this directly
-    var heroesCachePublisher: AsyncStream<HeroesContainer> { stream }
+    var streamPlan: StreamPlan = .none
 
-    func emitCache(_ container: HeroesContainer) {
-        continuation.yield(container)
-    }
+    var pageGate: CallGate?
 
-    // Scripted responses
-    private var mockedRefresh: Result<HeroesContainer, Error>?
-    private var mockedNextQueue: [Result<HeroesContainer, Error>] = []
+    // MARK: - Scripting pagination
+    var pageResultsQueue: [Result<HeroesContainer, Error>] = []
+    private(set) var fetchNextPageCalls = 0
 
-    func mockRefresh(_ result: Result<HeroesContainer, Error>) {
-        mockedRefresh = result
-    }
+    // MARK: - hasMorePages
+    var _hasMorePages: Bool = true
+    var hasMorePages: Bool { get async { _hasMorePages } }
 
-    func mockFetchNext(_ result: Result<HeroesContainer, Error>) {
-        mockedNextQueue.append(result)
-    }
+    // MARK: - Protocol
+    func initialStream() async -> AsyncThrowingStream<HeroesContainer, Error> {
+        AsyncThrowingStream(bufferingPolicy: .unbounded) { cont in
+            let t = Task {
+                switch streamPlan {
+                case .none:
+                    cont.finish()
 
-    // Protocol
-    func refresh() async throws -> HeroesContainer {
-        guard let r = mockedRefresh else {
-            fatalError("MockPaginationInteractor.refresh not scripted")
+                case let .error(e):
+                    cont.finish(throwing: e)
+
+                case let .cacheOnly(c):
+                    cont.yield(c); cont.finish()
+
+                case let .freshOnly(f):
+                    cont.yield(f); cont.finish()
+
+                case let .cacheThenFresh(c, f):
+                    cont.yield(c)
+                    await Task.yield()
+                    cont.yield(f)
+                    cont.finish()
+
+                case let .cacheThenError(c, e):
+                    cont.yield(c)
+                    await Task.yield()
+                    cont.finish(throwing: e)
+
+                case let .cacheThenFreshGated(c, f, gate):
+                    cont.yield(c)
+                    await gate.waitIfClosed() // block until test opens
+                    cont.yield(f)
+                    cont.finish()
+                }
+            }
+            cont.onTermination = { _ in t.cancel() }
         }
-        return try r.get()
     }
 
-    func reset() async {}
+    func reset() async { /* no-op */ }
 
     func fetchNextPage() async throws -> HeroesContainer {
-        guard !mockedNextQueue.isEmpty else {
-            fatalError("MockPaginationInteractor.fetchNextPage not scripted")
-        }
-        return try mockedNextQueue.removeFirst().get()
+        fetchNextPageCalls += 1
+        if let gate = pageGate { await gate.waitIfClosed() }  // block here until test opens
+        guard !pageResultsQueue.isEmpty else { fatalError("No pageResultsQueue scripted") }
+        return try pageResultsQueue.removeFirst().get()
     }
 }
