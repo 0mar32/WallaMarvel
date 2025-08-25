@@ -83,71 +83,37 @@ jobs:
             xcodebuild -list -json -project "${PROJECT}"
           fi | python3 -c 'import sys,json; d=json.load(sys.stdin); print("\n".join((d.get("schemes") or (d.get("project") or {}).get("schemes",[])) or []))'
   
-      - name: Discover & run Module tests (SPM under /Modules)
+      - name: Run SPM package tests (macOS host)
         run: |
           set -eo pipefail
           shopt -s nullglob
-
-          list_schemes_json () {
-            if [ -n "${WORKSPACE:-}" ]; then
-              xcodebuild -list -json -workspace "${WORKSPACE}"
-            else
-              xcodebuild -list -json -project "${PROJECT}"
-            fi
-          }
-
-          scheme_exists () {
-            local s="$1"
-            list_schemes_json | \
-              python3 -c 'import sys,json; d=json.load(sys.stdin); schemes=(d.get("schemes") or (d.get("project") or {}).get("schemes",[])) or []; t=sys.argv[1]; sys.exit(0 if t in schemes else 1)' "$s"
-          }
+          fail=0
 
           for pkgfile in Modules/*/Package.swift; do
             dir="$(dirname "$pkgfile")"
 
-            # Read package metadata to decide if it has tests
-            json="$(swift package --package-path "$dir" dump-package)"
+            # Read package metadata
+            json="$(swift package --package-path "$dir" dump-package || true)"
+            if [ -z "$json" ]; then
+              echo "⚠️  Could not parse $dir/Package.swift (skipping)"; continue
+            fi
             name="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d["name"])')"
-            has_tests="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(any(t.get("type")=="test" for t in d.get("targets",[])))')"
+            has_tests="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(any(t.get(\"type\")==\"test\" for t in d.get(\"targets\",[])))')"
 
-            if [ "$has_tests" = "True" ] || [ "$has_tests" = "true" ]; then
-              echo "→ Running tests for package: ${name}"
-              bundle="Modules-${name}.xcresult"
-
-              ran=""
-              for scheme in "${name}-Package" "${name}"; do
-                if scheme_exists "$scheme"; then
-                  if [ -n "${WORKSPACE:-}" ]; then
-                    xcodebuild test \
-                      -workspace "${WORKSPACE}" \
-                      -scheme "$scheme" \
-                      -configuration "${CONFIGURATION}" \
-                      -destination "${DESTINATION}" \
-                      -resultBundlePath "$bundle" \
-                      CODE_SIGNING_ALLOWED=NO
-                  else
-                    xcodebuild test \
-                      -project "${PROJECT}" \
-                      -scheme "$scheme" \
-                      -configuration "${CONFIGURATION}" \
-                      -destination "${DESTINATION}" \
-                      -resultBundlePath "$bundle" \
-                      CODE_SIGNING_ALLOWED=NO
-                  fi
-                  ran="yes"
-                  break
-                fi
-              done
-
-              if [ -z "$ran" ]; then
-                echo "⚠️  No matching scheme found for ${name} (tried '${name}-Package' and '${name}'). Skipping."
+            if [[ "$has_tests" =~ ^(True|true)$ ]]; then
+              echo "→ swift test: $name ($dir)"
+              if ! swift test --package-path "$dir" --enable-code-coverage; then
+                echo "❌ swift test failed for $name."
+                echo "   If this package is iOS-only, add its test bundle to an Xcode scheme/test plan (see option B)."
+                fail=1
               fi
             else
-              echo "ℹ️  Package ${name} has no test targets (skipping)"
+              echo "ℹ️  $name has no test targets (skipping)"
             fi
           done
 
           shopt -u nullglob
+          exit $fail
 
       - name: Run UI tests (app scheme)
         run: |
