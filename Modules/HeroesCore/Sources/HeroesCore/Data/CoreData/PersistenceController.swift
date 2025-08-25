@@ -9,12 +9,6 @@ import Foundation
 import CoreData
 import AppConfig
 
-protocol PersistenceControllerProtocol {
-    
-}
-
-import CoreData
-
 public final class PersistenceController: Sendable {
     public static let shared = PersistenceController(inMemory: false)
 

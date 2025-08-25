@@ -7,7 +7,6 @@
 
 import Foundation
 import CoreData
-import AppConfig
 
 // MARK: - Storage Service Protocol
 public protocol HeroesStorageServiceProtocol {
@@ -16,34 +15,30 @@ public protocol HeroesStorageServiceProtocol {
     func flushHeroes() throws
 }
 
-public class HeroesStorageService: HeroesStorageServiceProtocol {
-    private let persistence: PersistenceController
+public final class HeroesStorageService: HeroesStorageServiceProtocol {
+    private let stack: CoreDataStack
 
-    public init(persistence: PersistenceController) {
-        self.persistence = persistence
+    public init(stack: CoreDataStack) {
+        self.stack = stack
     }
 
-    public convenience init(isMemoryStorage: Bool = AppEnvironment.isRunningUITests) {
-        if isMemoryStorage {
-            self.init(persistence: .init(inMemory: isMemoryStorage))
-        } else {
-            self.init(persistence: .shared)
-        }
+    convenience init () {
+        self.init(stack: DefaultCoreDataStack())
     }
 
-    // Fetch on main thread (viewContext)
+    // MARK: - Fetch on main thread (viewContext)
     public func fetchAllHeroes() throws -> [Hero] {
-        try persistence.container.viewContext.performAndWait {
+        try stack.viewContext.performAndWait {
             let request: NSFetchRequest<HeroEntity> = HeroEntity.fetchRequest()
             request.sortDescriptors = [NSSortDescriptor(key: "sortIndex", ascending: true)]
-            let entities = try persistence.container.viewContext.fetch(request)
+            let entities = try stack.viewContext.fetch(request)
             return entities.map { $0.toDomainModel() }
         }
     }
 
-    // Store heroes on background context
+    // MARK: - Store on background context
     public func storeHeroes(_ heroes: [Hero], offset: Int) throws {
-        let context = persistence.newBackgroundContext()
+        let context = stack.newBackgroundContext()
         try context.performAndWait {
             for (index, hero) in heroes.enumerated() {
                 let entity = try fetchOrCreateEntity(id: hero.id, context: context)
@@ -54,9 +49,9 @@ public class HeroesStorageService: HeroesStorageServiceProtocol {
         }
     }
 
-    // Deletes all cached Hero entities.
+    // MARK: - Flush
     public func flushHeroes() throws {
-        let context = persistence.newBackgroundContext()
+        let context = stack.newBackgroundContext()
         try context.performAndWait {
             let fetchRequest: NSFetchRequest<NSFetchRequestResult> = HeroEntity.fetchRequest()
             let deleteRequest = NSBatchDeleteRequest(fetchRequest: fetchRequest)
@@ -64,17 +59,17 @@ public class HeroesStorageService: HeroesStorageServiceProtocol {
 
             let result = try context.execute(deleteRequest) as? NSBatchDeleteResult
             if let objectIDs = result?.result as? [NSManagedObjectID], !objectIDs.isEmpty {
-                let changes: [AnyHashable: Any] = [
-                    NSDeletedObjectsKey: objectIDs
-                ]
-                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes, into: [persistence.container.viewContext])
+                let changes: [AnyHashable: Any] = [NSDeletedObjectsKey: objectIDs]
+                NSManagedObjectContext.mergeChanges(fromRemoteContextSave: changes,
+                                                    into: [stack.viewContext])
             }
-
             try context.save()
         }
     }
 
-    private func fetchOrCreateEntity(id: Int, context: NSManagedObjectContext) throws -> HeroEntity {
+    // MARK: - Helpers
+    /// @testable can access in unit tests if you need to.
+    func fetchOrCreateEntity(id: Int, context: NSManagedObjectContext) throws -> HeroEntity {
         let request = HeroEntity.fetchRequest()
         request.predicate = NSPredicate(format: "id == %d", id)
         request.fetchLimit = 1

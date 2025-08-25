@@ -1,7 +1,6 @@
 import Foundation
 import CoreData
 import NetworkClient
-import AppConfig
 
 // MARK: - Repository Protocol
 public protocol HeroesRepositoryProtocol: Sendable {
