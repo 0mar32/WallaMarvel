@@ -49,7 +49,6 @@ func assertSnapshot(
     SnapshotTesting.assertSnapshot(
         of: configured,
         as: .image(
-//            precision: 0.997,
             layout: .fixed(width: width, height: height),
             traits: traits
         ),
