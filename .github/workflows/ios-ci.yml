@@ -95,12 +95,12 @@ jobs:
               ran=""
               for scheme in "${name}-Package" "${name}"; do
                 # Check if the scheme exists for this package
-                if xcodebuild -list -json -package-path "$dir" | \
-                   python3 -c 'import sys,json; d=json.load(sys.stdin); schemes=(d.get("schemes") or d.get("project",{}).get("schemes",[])) or []; import sys; target=sys.argv[1]; sys.exit(0 if target in schemes else 1)' "$scheme"
+                if xcodebuild -list -json -packagePath "$dir" | \
+                   python3 -c 'import sys,json; d=json.load(sys.stdin); schemes=(d.get("schemes") or d.get("project",{}).get("schemes",[])) or []; target=sys.argv[1]; sys.exit(0 if target in schemes else 1)' "$scheme"
                 then
                   # Run tests with the first matching scheme
                   xcodebuild test \
-                    -package-path "$dir" \
+                    -packagePath "$dir" \
                     -scheme "$scheme" \
                     -destination "${DESTINATION}" \
                     -resultBundlePath "$bundle" \
@@ -119,6 +119,7 @@ jobs:
           done
 
           shopt -u nullglob
+
 
       - name: Run UI tests (app scheme)
         run: |
