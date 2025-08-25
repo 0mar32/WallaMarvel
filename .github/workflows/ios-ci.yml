@@ -48,44 +48,14 @@ jobs:
       - name: Resolve packages
         run: |
           set -eo pipefail
-          if [ -n "${WORKSPACE:-}" ]; then
-            xcodebuild -resolvePackageDependencies -workspace "${WORKSPACE}"
-          else
-            xcodebuild -resolvePackageDependencies -project "${PROJECT}"
-          fi
+          xcodebuild -resolvePackageDependencies -project "${PROJECT}"
 
-      - name: Run DesignSystemTests only
+      - name: Run module unit test schemes (exclude UITests)
         shell: bash
         run: |
           set -eo pipefail
 
-          # Fail fast if the shared scheme doesn't exist
-          if ! xcodebuild -list -project "${PROJECT}" \
-            | awk '/Schemes:/{p=1;next} p && NF {sub(/^ +/,""); print} p && !NF {exit}' \
-            | grep -Fx "DesignSystemTests" >/dev/null; then
-            echo "❌ Shared scheme 'DesignSystemTests' not found. Make sure it's shared & committed."
-            xcodebuild -list -project "${PROJECT}" || true
-            exit 1
-          fi
-
-          xcodebuild test \
-            -project "${PROJECT}" \
-            -scheme "DesignSystemTests" \
-            -configuration "${CONFIGURATION}" \
-            -destination "${DESTINATION}" \
-            -testLanguage en \
-            -testRegion US \
-            -parallel-testing-enabled NO \
-            -maximum-parallel-testing-workers 1 \
-            -resultBundlePath "Unit-DesignSystemTests.xcresult" \
-            CODE_SIGNING_ALLOWED=NO
-
-      - name: Run module test schemes
-        shell: bash
-        run: |
-          set -eo pipefail
-
-          # 1) Get schemes to run
+          # Prefer allow-list if present; else auto-detect "*Tests" excluding "*UITests"
           if [ -f .ci/test-schemes.txt ]; then
             SCHEMES="$(sed -e 's/#.*$//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' .ci/test-schemes.txt \
               | awk 'NF' | sort -u)"
@@ -96,18 +66,17 @@ jobs:
           fi
 
           if [ -z "$SCHEMES" ]; then
-            echo "No test schemes found. Make sure your per-module test schemes are Shared or list them in .ci/test-schemes.txt."
+            echo "No unit-test schemes found. Ensure your test schemes are Shared or list them in .ci/test-schemes.txt."
             exit 0
           fi
 
-          echo "→ Running schemes:"
+          echo "→ Running unit-test schemes:"
           printf '  %s\n' "$SCHEMES"
 
-          # 2) Run each scheme on iOS Simulator
           fail=0
           while IFS= read -r scheme; do
             [ -z "$scheme" ] && continue
-            echo "===== Testing: $scheme ====="
+            echo "===== Unit Testing: $scheme ====="
             bundle="Unit-${scheme// /_}.xcresult"
             xcodebuild test \
               -project "${PROJECT}" \
@@ -124,35 +93,42 @@ jobs:
 
           exit $fail
 
-      - name: Run UI tests (app scheme)
+      - name: Run UI test schemes (ends with UITests)
+        shell: bash
         run: |
           set -eo pipefail
-          UI_BUNDLE="UITests-${APP_SCHEME}.xcresult"
-          if [ -n "${WORKSPACE:-}" ]; then
-            xcodebuild test \
-              -workspace "${WORKSPACE}" \
-              -scheme "${APP_SCHEME}" \
-              -configuration "${CONFIGURATION}" \
-              -destination "${DESTINATION}" \
-              -testLanguage en \
-              -testRegion US \
-              -parallel-testing-enabled NO \
-              -maximum-parallel-testing-workers 1 \
-              -resultBundlePath "${UI_BUNDLE}" \
-              CODE_SIGNING_ALLOWED=NO
-          else
+
+          UI_SCHEMES="$(xcodebuild -list -project "${PROJECT}" \
+            | awk '/Schemes:/{p=1;next} p && NF {sub(/^ +/,""); print} p && !NF {exit}' \
+            | grep -E 'UITests$' | sort -u)"
+
+          if [ -z "$UI_SCHEMES" ]; then
+            echo "No UI test schemes (ending with UITests) found. Skipping."
+            exit 0
+          fi
+
+          echo "→ Running UI-test schemes:"
+          printf '  %s\n' "$UI_SCHEMES"
+
+          fail=0
+          while IFS= read -r scheme; do
+            [ -z "$scheme" ] && continue
+            echo "===== UI Testing: $scheme ====="
+            bundle="UI-${scheme// /_}.xcresult"
             xcodebuild test \
               -project "${PROJECT}" \
-              -scheme "${APP_SCHEME}" \
+              -scheme "${scheme}" \
               -configuration "${CONFIGURATION}" \
               -destination "${DESTINATION}" \
               -testLanguage en \
               -testRegion US \
               -parallel-testing-enabled NO \
               -maximum-parallel-testing-workers 1 \
-              -resultBundlePath "${UI_BUNDLE}" \
-              CODE_SIGNING_ALLOWED=NO
-          fi
+              -resultBundlePath "${bundle}" \
+              CODE_SIGNING_ALLOWED=NO || fail=1
+          done <<< "$UI_SCHEMES"
+
+          exit $fail
 
       - name: Upload .xcresult bundles
         if: always()
