@@ -78,77 +78,47 @@ jobs:
       - name: Discover & run Module tests (SPM under /Modules)
         run: |
           set -eo pipefail
+          shopt -s nullglob
 
-          run_tests_for_scheme () {
-            local scheme="$1"
-            local bundle="Modules-${scheme}.xcresult"
-            echo "→ Running tests for scheme: ${scheme}"
-            if [ -n "${WORKSPACE:-}" ]; then
-              xcodebuild test \
-                -workspace "${WORKSPACE}" \
-                -scheme "${scheme}" \
-                -configuration "${CONFIGURATION}" \
-                -destination "${DESTINATION}" \
-                -resultBundlePath "${bundle}" \
-                CODE_SIGNING_ALLOWED=NO
+          for pkgfile in Modules/*/Package.swift; do
+            dir="$(dirname "$pkgfile")"
+
+            # Extract package name and whether it has test targets
+            json="$(swift package --package-path "$dir" dump-package)"
+            name="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d["name"])')"
+            has_tests="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(any(t.get("type")=="test" for t in d.get("targets",[])))')"
+
+            if [ "$has_tests" = "True" ] || [ "$has_tests" = "true" ]; then
+              echo "→ Running tests for package: ${name} at ${dir}"
+              bundle="Modules-${name}.xcresult"
+
+              ran=""
+              for scheme in "${name}-Package" "${name}"; do
+                # Check if the scheme exists for this package
+                if xcodebuild -list -json -package-path "$dir" | \
+                   python3 -c 'import sys,json; d=json.load(sys.stdin); schemes=(d.get("schemes") or d.get("project",{}).get("schemes",[])) or []; import sys; target=sys.argv[1]; sys.exit(0 if target in schemes else 1)' "$scheme"
+                then
+                  # Run tests with the first matching scheme
+                  xcodebuild test \
+                    -package-path "$dir" \
+                    -scheme "$scheme" \
+                    -destination "${DESTINATION}" \
+                    -resultBundlePath "$bundle" \
+                    CODE_SIGNING_ALLOWED=NO
+                  ran="yes"
+                  break
+                fi
+              done
+
+              if [ -z "$ran" ]; then
+                echo "⚠️  No matching scheme found for ${name} (tried '${name}-Package' and '${name}'). Skipping."
+              fi
             else
-              xcodebuild test \
-                -project "${PROJECT}" \
-                -scheme "${scheme}" \
-                -configuration "${CONFIGURATION}" \
-                -destination "${DESTINATION}" \
-                -resultBundlePath "${bundle}" \
-                CODE_SIGNING_ALLOWED=NO
+              echo "ℹ️  Package ${name} has no test targets (skipping)"
             fi
-          }
-
-          run_tests_for_package () {
-            local pkg="$1"
-            local candidates=("${pkg}-Package" "${pkg}")
-            local chosen=""
-            for s in "${candidates[@]}"; do
-              if [ -n "${WORKSPACE:-}" ]; then
-                if xcodebuild -workspace "${WORKSPACE}" -scheme "${s}" -showBuildSettings >/dev/null 2>&1; then
-                  chosen="$s"; break
-                fi
-              else
-                if xcodebuild -project "${PROJECT}" -scheme "${s}" -showBuildSettings >/dev/null 2>&1; then
-                  chosen="$s"; break
-                fi
-              fi
-            done
-            if [ -z "$chosen" ]; then
-              echo "⚠️  No testable scheme found for package '${pkg}' (skipping)"
-              return 0
-            fi
-            run_tests_for_scheme "$chosen"
-          }
-
-          declare -a PACKAGES=()
-          if [ -f .ci/module-schemes.txt ]; then
-            while IFS= read -r line; do
-              line="$(echo "$line" | sed 's/^[[:space:]]*//;s/[[:space:]]*$//')"
-              [ -z "$line" ] && continue
-              PACKAGES+=("$line")
-            done < .ci/module-schemes.txt
-          else
-            shopt -s nullglob
-            for pkgfile in Modules/*/Package.swift; do
-              dir="$(dirname "$pkgfile")"
-              json="$(swift package --package-path "$dir" dump-package)"
-              name="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(d["name"])')"
-              has_tests="$(printf '%s' "$json" | python3 -c 'import sys,json; d=json.load(sys.stdin); print(any(t.get("type")=="test" for t in d.get("targets",[])))')"
-              if [ "$has_tests" = "True" ] || [ "$has_tests" = "true" ]; then
-                PACKAGES+=("$name")
-              fi
-            done
-            shopt -u nullglob
-          fi
-
-          printf "%s\n" "${PACKAGES[@]}" | awk '{$1=$1};1' | sort -u | while read -r pkg; do
-            [ -z "$pkg" ] && continue
-            run_tests_for_package "$pkg"
           done
+
+          shopt -u nullglob
 
       - name: Run UI tests (app scheme)
         run: |
