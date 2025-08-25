@@ -9,7 +9,6 @@ import XCTest
 import SwiftUI
 @testable import DesignSystem
 
-
 final class VerticalTitleWithActionTests: XCTestCase {
 
     // Tweak if your tokens differ

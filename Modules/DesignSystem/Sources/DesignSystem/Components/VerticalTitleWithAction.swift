@@ -37,8 +37,8 @@ public struct VerticalTitleWithAction: View {
             Button(buttonTitle, action: action)
                 .buttonStyle(.bordered)
         }
-        .font(.callout)
-        .foregroundColor(.secondary)
+        .font(TextStyles.body)
+        .foregroundColor(Color(Colors.Text.secondary))
         .padding(.vertical, Padding.medium)
     }
 }
