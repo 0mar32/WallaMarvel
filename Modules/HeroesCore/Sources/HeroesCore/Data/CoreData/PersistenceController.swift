@@ -7,8 +7,7 @@
 
 import Foundation
 import CoreData
-
-import CoreData
+import AppConfig
 
 public final class PersistenceController: Sendable {
     public static let shared = PersistenceController(inMemory: false)

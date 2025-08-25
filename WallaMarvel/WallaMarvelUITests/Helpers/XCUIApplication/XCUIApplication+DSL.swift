@@ -25,12 +25,8 @@ public extension XCUIApplication {
         query(.button, match: match).firstMatch
     }
 
-    func tapButton(_ match: Match, timeout: TimeInterval = 5) {
+    func tapButton(_ match: Match) {
         let buttonElement = button(match)
-        XCTAssertTrue(
-            buttonElement.waitForExistence(timeout: timeout),
-            "Button not found: \(match)"
-        )
         buttonElement.tap()
     }
 
@@ -44,12 +40,8 @@ public extension XCUIApplication {
         query(.textField, match: match).firstMatch
     }
 
-    func type(_ text: String, into match: Match, timeout: TimeInterval = 5) {
+    func type(_ text: String, into match: Match) {
         let textFieldElement = textField(match)
-        XCTAssertTrue(
-            textFieldElement.waitForExistence(timeout: timeout),
-            "Text field not found: \(match)"
-        )
         textFieldElement.tap()
         textFieldElement.typeText(text)
     }

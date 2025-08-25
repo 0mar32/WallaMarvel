@@ -1,53 +1,35 @@
 import Foundation
 
-public enum PaginationError: Error {
-    case noMorePages
-    case refreshInProgress
-}
-
 public protocol HeroesPaginationInteractorProtocol: Sendable {
     var hasMorePages: Bool { get async }
-    var heroesCachePublisher: AsyncStream<HeroesContainer> { get async }
-    func refresh() async throws -> HeroesContainer
+    func initialStream() async -> AsyncThrowingStream<HeroesContainer, Error>
     func reset() async
     func fetchNextPage() async throws -> HeroesContainer
 }
 
 public actor HeroesPaginationInteractor: HeroesPaginationInteractorProtocol {
+    // MARK: - Dependancies
+
     private let repository: HeroesRepositoryProtocol
-    private var offset: Int = 0
     private let limit: Int
-    private var total: Int? = nil
 
-    private var isRefreshing = false
-    private var pendingPagination: CheckedContinuation<HeroesContainer, Error>?
+    // MARK: - Local mutable states
 
-    private var cacheSubscriptionTask: Task<Void, Never>?
-    private var didStartSubscription = false
+    private var offset: Int = 0
+    private var total: Int? = nil // as we do not know the total amount of data on remote initially
+    // This task to hold the initial load of the data.
+    // as long as the initial load is in-flight we need to park any pagination request
+    // until the initial load finishes then we let the pagination continue
+    private var initialLoadTask: Task<Void, Error>?
 
-    public var heroesCachePublisher: AsyncStream<HeroesContainer> {
-        repository.heroesPublisher
-    }
+    // MARK: - init
 
     public init(repository: HeroesRepositoryProtocol, limit: Int = 20) {
         self.repository = repository
         self.limit = limit
     }
 
-    deinit {
-        cacheSubscriptionTask?.cancel()
-    }
-
-    private func ensureCacheSubscriptionStarted() {
-        guard !didStartSubscription else { return }
-        didStartSubscription = true
-        cacheSubscriptionTask = Task { [weak self] in
-            guard let self else { return }
-            for await container in repository.heroesPublisher {
-                await self.applyCacheSnapshot(container)
-            }
-        }
-    }
+    // MARK: - public APIs
 
     public func reset() {
         offset = 0
@@ -61,66 +43,91 @@ public actor HeroesPaginationInteractor: HeroesPaginationInteractorProtocol {
         return true
     }
 
-    public func refresh() async throws -> HeroesContainer {
-        ensureCacheSubscriptionStarted()
+    /// user this function is used for getting all the cached pages(if any) then its corresponding fresh from remote.
+    /// ideally should be used for getting first page
+    /// - Returns: an AsyncStream that gives 1-2 events cache(if any) ->  remote
+    public func initialStream() -> AsyncThrowingStream<HeroesContainer, Error> {
+        AsyncThrowingStream<HeroesContainer, Error>(bufferingPolicy: .unbounded) { continuation in
+            Task { [weak self] in
+                guard let self else { return }
 
-        guard !isRefreshing else {
-            throw PaginationError.refreshInProgress
-        }
-
-        isRefreshing = true
-        defer { isRefreshing = false }
-
-        let result = try await repository.fetchHeroes(limit: limit, offset: 0)
-
-        offset = result.count
-        total = result.total
-
-        // to handle the case when user open the app -> cached data displayed -> user scroll down to paginate
-        // we should pend the pagination request until the first refresh for the initial data happens
-        if let continuation = pendingPagination {
-            pendingPagination = nil
-            Task {
-                do {
-                    let page = try await fetchNextPage()
-                    continuation.resume(returning: page)
-                } catch {
-                    continuation.resume(throwing: error)
+                // If an initial load is already running, fail fast
+                if await self.initialLoadTask != nil {
+                    continuation.finish(throwing: PaginationError.refreshInProgress)
+                    return
                 }
+
+                // Build a task that *represents* the entire cache→fresh work
+                let job = Task<Void, Error> { [weak self] in
+                    guard let self else { throw HeroesError.generic }
+                    defer {
+                        // always clear gate & refreshing at the very end
+                        Task { await self.finishInitialLoad() }
+                    }
+
+                    do {
+                        // Forward repo stream (cache → fresh), align counters, emit to caller
+                        for try await container in self.repository.fetchHeroesStream(
+                            limit: self.limit,
+                            offset: 0
+                        ) {
+                            await self.align(with: container)
+                            continuation.yield(container)
+                        }
+                        continuation.finish()
+                    } catch {
+                        continuation.finish(throwing: error)
+                        throw error
+                    }
+                }
+
+                // Store the gate so others (pagination) can await it
+                await self.setInitialLoadTask(job)
+
+                // Cancel the job if the stream consumer goes away
+                continuation.onTermination = { _ in job.cancel() }
             }
         }
-
-        return result
     }
 
+    /// This function get the next page of data from the remote
+    /// if any view model used this function only and not use ``HeroesPaginationInteractor/initialStream()`` at all, it will be only receiving data from remote
+    /// - Returns: fresh remote page
     public func fetchNextPage() async throws -> HeroesContainer {
-        ensureCacheSubscriptionStarted()
+        // If initial load is in-flight, just await it.
+        if let gate = initialLoadTask {
+            _ = try await gate.value
+        }
 
         guard hasMorePages else {
             throw PaginationError.noMorePages
         }
 
-        if isRefreshing {
-            return try await withCheckedThrowingContinuation { continuation in
-                pendingPagination = continuation
-            }
-        }
-
         let result = try await repository.fetchHeroes(limit: limit, offset: offset)
-
         offset += result.count
         total = result.total
-
         return result
     }
+}
 
-    private func applyCacheSnapshot(_ container: HeroesContainer) {
-        guard !isRefreshing else { return }
+// MARK: - actor helpers
+
+private extension HeroesPaginationInteractor {
+    //(actor-isolated)
+    func setInitialLoadTask(_ task: Task<Void, Error>?) {
+        initialLoadTask = task
+    }
+
+    func finishInitialLoad() {
+        initialLoadTask = nil
+    }
+
+    func align(with container: HeroesContainer) {
         if container.count > offset {
             offset = container.count
         }
-        if total == nil {
-            total = container.total
+        if total == nil, let newTotal = container.total {
+            total = newTotal
         }
     }
 }

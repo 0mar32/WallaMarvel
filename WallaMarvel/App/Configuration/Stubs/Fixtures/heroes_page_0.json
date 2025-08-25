@@ -352,7 +352,27 @@
             { "name": "Merlin’s Betrayal", "type": "cover" }
           ]
         }
-      }
+      },
+      {
+        "id": 1009146,
+        "name": "Abomination (Last page 1)",
+        "description": "A gamma-born enemy of the Hulk.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009146", "extension": "jpg" },
+        "series": {
+          "available": 2,
+          "items": [
+            { "name": "Incredible Hulk (1962)" },
+            { "name": "She-Hulk (2005)" }
+          ]
+        },
+        "stories": {
+          "available": 2,
+          "items": [
+            { "name": "Monster Unleashed", "type": "cover" },
+            { "name": "Rage of Blonsky", "type": "interiorStory" }
+          ]
+        }
+      },
     ]
   }
 }

@@ -17,13 +17,3 @@ extension SeriesItemDto {
         return Series(name: name)
     }
 }
-
-extension SeriesEntity {
-    static func fromDomain(_ series: Series, context: NSManagedObjectContext) -> SeriesEntity {
-        let entity = SeriesEntity(context: context)
-        entity.name = series.name
-        return entity
-    }
-    func toDomainModel() -> Series { Series(name: name ?? "") }
-}
-

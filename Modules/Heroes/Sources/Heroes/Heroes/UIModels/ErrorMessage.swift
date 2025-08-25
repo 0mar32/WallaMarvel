@@ -8,7 +8,19 @@
 import Foundation
 
 struct ErrorMessageUIModel: Identifiable, Equatable {
-    let id = UUID()
+
+    var id: String { title }
     let title: String
-    let text: String
+    let message: String
+    let actionTitle: String
+
+    init(
+        title: String,
+        message: String = "",
+        actionTitle: String
+    ) {
+        self.title = title
+        self.message = message
+        self.actionTitle = actionTitle
+    }
 }

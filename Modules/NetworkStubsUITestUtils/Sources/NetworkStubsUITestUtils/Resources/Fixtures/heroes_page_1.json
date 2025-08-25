@@ -1,0 +1,290 @@
+{
+  "data": {
+    "count": 20,
+    "limit": 20,
+    "offset": 20,
+    "total": 40,
+    "results": [
+      {
+        "id": 1009160,
+        "name": "Alex Power",
+        "description": "Member of Power Pack with gravity manipulation powers.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009160", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Power Pack (1984)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "The Power Within", "type": "cover" }]
+        }
+      },
+      {
+        "id": 1009161,
+        "name": "Alex Wilder",
+        "description": "Genius strategist and member of the Runaways.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009161", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Runaways (2003)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "The Betrayal", "type": "interiorStory" }]
+        }
+      },
+      {
+        "id": 1009162,
+        "name": "Alias",
+        "description": "Private investigator and former superhero Jessica Jones.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009162", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Alias (2001)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "The Pulse Begins", "type": "cover" }]
+        }
+      },
+      {
+        "id": 1009163,
+        "name": "Alpha Flight",
+        "description": "Canadian superhero team assembled by Department H.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009163", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Alpha Flight (1983)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Northern Heroes", "type": "interiorStory" }]
+        }
+      },
+      {
+        "id": 1009164,
+        "name": "Amadeus Cho",
+        "description": "Teen genius and the Totally Awesome Hulk.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009164", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Incredible Hulk (2007)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Gamma Genius", "type": "cover" }]
+        }
+      },
+      {
+        "id": 1009165,
+        "name": "American Eagle",
+        "description": "Superhero with enhanced strength and agility.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009165", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Thunderbolts (2006)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Wings of Justice", "type": "interiorStory" }]
+        }
+      },
+      {
+        "id": 1009166,
+        "name": "Amiko",
+        "description": "Orphan adopted by Wolverine after tragic events.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009166", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Wolverine (1988)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Shadow of the Clan", "type": "cover" }]
+        }
+      },
+      {
+        "id": 1009167,
+        "name": "Amphibian",
+        "description": "Sub-mariner hero with aquatic abilities.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009167", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Squadron Supreme (1985)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Tides of Change", "type": "interiorStory" }]
+        }
+      },
+      {
+        "id": 1009168,
+        "name": "Ancient One",
+        "description": "Former Sorcerer Supreme and mentor to Doctor Strange.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009168", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Doctor Strange (1974)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Mystic Mastery", "type": "cover" }]
+        }
+      },
+      {
+        "id": 1009169,
+        "name": "Angel",
+        "description": "Founding X-Man with wings and aerial prowess.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009169", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "X-Men (1963)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Flight of the Angel", "type": "interiorStory" }]
+        }
+      },
+      {
+        "id": 1009170,
+        "name": "Angela",
+        "description": "Asgardian warrior and ally to the Guardians.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009170", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Guardians of the Galaxy (2013)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Angelic Wrath", "type": "cover" }]
+        }
+      },
+      {
+        "id": 1009171,
+        "name": "Anita Blake",
+        "description": "Vampire hunter with necromantic powers.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009171", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Anita Blake: Vampire Hunter (2006)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Blood Debt", "type": "interiorStory" }]
+        }
+      },
+      {
+        "id": 1009172,
+        "name": "Annalee",
+        "description": "Morlock empath seeking to unite her people.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009172", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Uncanny X-Men (1963)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Beneath the Sewers", "type": "cover" }]
+        }
+      },
+      {
+        "id": 1009173,
+        "name": "Annihilus",
+        "description": "Ruler of the Negative Zone with near-limitless power.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009173", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Fantastic Four (1961)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Negative Zone War", "type": "interiorStory" }]
+        }
+      },
+      {
+        "id": 1009174,
+        "name": "Ant-Man (Scott Lang)",
+        "description": "Ex-con turned hero with shrinking tech.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009174", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Ant-Man (2015)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Small Hero, Big Heart", "type": "cover" }]
+        }
+      },
+      {
+        "id": 1009175,
+        "name": "Apocalypse",
+        "description": "Ancient mutant obsessed with survival of the fittest.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009175", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "X-Factor (1986)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Age of Apocalypse", "type": "interiorStory" }]
+        }
+      },
+      {
+        "id": 1009176,
+        "name": "Arcade",
+        "description": "Master of Murderworld with deadly games.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009176", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Marvel Team-Up (1972)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Deadly Funhouse", "type": "cover" }]
+        }
+      },
+      {
+        "id": 1009177,
+        "name": "Archangel",
+        "description": "Warren Worthington reborn with razor-sharp wings.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009177", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "X-Force (1991)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Wings of Vengeance", "type": "interiorStory" }]
+        }
+      },
+      {
+        "id": 1009178,
+        "name": "Arclight",
+        "description": "Member of the Marauders with seismic strength.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009178", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Uncanny X-Men (1986)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "Shockwave", "type": "cover" }]
+        }
+      },
+      {
+        "id": 1009179,
+        "name": "Ares",
+        "description": "God of War turned reluctant Avenger.",
+        "thumbnail": { "path": "https://i.example.com/marvel/1009179", "extension": "jpg" },
+        "series": {
+          "available": 1,
+          "items": [{ "name": "Dark Avengers (2009)" }]
+        },
+        "stories": {
+          "available": 1,
+          "items": [{ "name": "War Incarnate", "type": "interiorStory" }]
+        }
+      }
+    ]
+  }
+}

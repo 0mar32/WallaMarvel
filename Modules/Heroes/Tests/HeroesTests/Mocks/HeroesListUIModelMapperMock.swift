@@ -9,7 +9,7 @@ import Foundation
 import HeroesCore
 @testable import Heroes
 
-final class HeroesListMapperMock: HeroesListUIModelMapperProtocol, Sendable {
+final class HeroesListUIModelMapperMock: HeroesListUIModelMapperProtocol, Sendable {
     func map(heroes: [Hero]) -> [HeroListItemUIModel] {
         heroes.map {
             HeroListItemUIModel(

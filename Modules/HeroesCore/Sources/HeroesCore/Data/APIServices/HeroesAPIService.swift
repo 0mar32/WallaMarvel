@@ -1,7 +1,7 @@
 import Foundation
 
 import NetworkClient
-import NetworkClientConfig
+import AppConfig
 
 public protocol HeroesAPIServiceProtocol {
     func fetchHeroes(paginationInfo: PaginationDto?) async throws -> HeroesResponseDto
