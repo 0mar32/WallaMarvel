@@ -75,52 +75,43 @@ jobs:
               build
           fi
 
-      - name: Run Module tests
+      - name: Run per-module test schemes (project only)
+        shell: bash
         run: |
           set -eo pipefail
 
-          # Collect schemes to run: prefer .ci/test-schemes.txt; otherwise auto-detect *Tests (excluding UITests)
+          # 1) Get schemes to run
           if [ -f .ci/test-schemes.txt ]; then
-            mapfile -t SCHEMES < <(sed -e 's/#.*$//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' .ci/test-schemes.txt | awk 'NF' | sort -u)
+            SCHEMES="$(sed -e 's/#.*$//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' .ci/test-schemes.txt \
+              | awk 'NF' | sort -u)"
           else
-            if [ -n "${WORKSPACE:-}" ]; then
-              RAW="$(xcodebuild -list -workspace "${WORKSPACE}")"
-            else
-              RAW="$(xcodebuild -list -project "${PROJECT}")"
-            fi
-            mapfile -t SCHEMES < <(printf '%s\n' "$RAW" | awk '/Schemes:/{p=1;next} p && NF {sub(/^ +/,""); print} p && !NF {exit}' | grep -E 'Tests$' | grep -v -E 'UITests$' | sort -u)
+            SCHEMES="$(xcodebuild -list -project "${PROJECT}" \
+              | awk '/Schemes:/{p=1;next} p && NF {sub(/^ +/,""); print} p && !NF {exit}' \
+              | grep -E 'Tests$' | grep -v -E 'UITests$' | sort -u)"
           fi
 
-          if [ ${#SCHEMES[@]} -eq 0 ]; then
-            echo "No test schemes found. Ensure your test schemes are Shared or populate .ci/test-schemes.txt."
+          if [ -z "$SCHEMES" ]; then
+            echo "No test schemes found. Make sure your per-module test schemes are Shared or list them in .ci/test-schemes.txt."
             exit 0
           fi
 
-          echo "→ Will run schemes:"
-          printf '  - %s\n' "${SCHEMES[@]}"
+          echo "→ Running schemes:"
+          printf '  %s\n' "$SCHEMES"
 
+          # 2) Run each scheme on iOS Simulator
           fail=0
-          for scheme in "${SCHEMES[@]}"; do
-            echo "===== Running tests for scheme: ${scheme} ====="
+          while IFS= read -r scheme; do
+            [ -z "$scheme" ] && continue
+            echo "===== Testing: $scheme ====="
             bundle="Unit-${scheme// /_}.xcresult"
-            if [ -n "${WORKSPACE:-}" ]; then
-              xcodebuild test \
-                -workspace "${WORKSPACE}" \
-                -scheme "${scheme}" \
-                -configuration "${CONFIGURATION}" \
-                -destination "${DESTINATION}" \
-                -resultBundlePath "${bundle}" \
-                CODE_SIGNING_ALLOWED=NO || fail=1
-            else
-              xcodebuild test \
-                -project "${PROJECT}" \
-                -scheme "${scheme}" \
-                -configuration "${CONFIGURATION}" \
-                -destination "${DESTINATION}" \
-                -resultBundlePath "${bundle}" \
-                CODE_SIGNING_ALLOWED=NO || fail=1
-            fi
-          done
+            xcodebuild test \
+              -project "${PROJECT}" \
+              -scheme "${scheme}" \
+              -configuration "${CONFIGURATION}" \
+              -destination "${DESTINATION}" \
+              -resultBundlePath "${bundle}" \
+              CODE_SIGNING_ALLOWED=NO || fail=1
+          done <<< "$SCHEMES"
 
           exit $fail
 
