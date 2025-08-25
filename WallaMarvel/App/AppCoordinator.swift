@@ -17,8 +17,7 @@ protocol Coordinator {
 
 final class AppCoordinator: Coordinator {
 
-    // Keep a strong ref to the window.
-    private let window: UIWindow
+    private var window: UIWindow?
 
     // Expose the nav if other coordinators need it.
     let navigationController = UINavigationController()
@@ -30,8 +29,8 @@ final class AppCoordinator: Coordinator {
     @MainActor
     func start() {
         // Root wiring
-        window.rootViewController = navigationController
-        window.makeKeyAndVisible()
+        window?.rootViewController = navigationController
+        window?.makeKeyAndVisible()
 
         let repository = HeroesRepository()
         let interactor = HeroesPaginationInteractor(repository: repository)
