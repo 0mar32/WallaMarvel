@@ -15,6 +15,13 @@ WallaMarvel uses the public Marvel API to display a **Heroes List** with infinit
 
 ![Module dependency graph](docs/dependency-graph.png)
 
+### Notes about the modules graph
+- All the red color are not implemented, but it is here show how would I make higher decoupling between domain layer and presentation layer
+- **HeroesCoreAPI** - should be module that own only the shared types that both layers (domain and UI) needs to know in order to communicate with each other
+- **HeroesCoreAPI** - must only have the public Types and Protocols used cross layer communication.
+- **HeroesCoreAPI** - must have NO implementation 
+- by doing this arrows going down from the low level module(UI) would not pass to the higher level module (Domain), both will depend on abstraction
+
 ## Modules
 The app is highly modularized using SPM:
 
@@ -32,7 +39,7 @@ The app is highly modularized using SPM:
 
 - **MVVM** for feature UIs  
 - **Repository** in `HeroesCore` to abstract data sources  
-- **Coordinator** to drive navigation between screens (in progress)
+- **Coordinator** to drive navigation between screens
 
 ## Caching & Offline Behavior
 To provide a smooth, offline-friendly experience:
@@ -47,9 +54,12 @@ To provide a smooth, offline-friendly experience:
 - **Race-safety:** if the user scrolls to paginate while the initial cache refresh hasn’t finished, we **defer pagination** until the refresh completes.
 
 ## Testing
-- **Snapshot Tests** — `DesignSystem` components are covered with snapshot tests.
+- **Snapshot Tests** — only `DesignSystem` components are covered with snapshot tests. to be improved, cover important screen with this type of testing to make sure that grouping the components in one screen are placed properly 
 - **Unit Tests** — Each module ships its own unit tests for core logic.
 - **UI Tests** — Live in the app target and cover the core user flow.
 
 ## CI
-In progress…
+- It is work in progress on brach `MRVL-16/feature/added-ci`
+- I am using Github Actions
+- The file is structured with steps that the workflow would do when a Job runs 
+- Just created one to run all the tests including the UITests with any PR review, but ideally in real world, I would makes only unit tests runs with PR review and UITests to run only before the release or at scheduled times  
