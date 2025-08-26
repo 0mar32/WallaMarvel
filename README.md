@@ -61,8 +61,10 @@ To provide a smooth, offline-friendly experience:
 ## CI
 - It is work in progress on brach `MRVL-16/feature/added-ci`
 - I am using Github Actions
-- The file is structured with steps that the workflow would do when a Job runs 
-- Just created one to run all the tests including the UITests with any PR review, but ideally in real world, I would makes only unit tests runs with PR review and UITests to run only before the release or at scheduled times 
+- Added one workflow that runs both unit tests and UITests
+- Just created one to run all the tests including the UITests with any PR review, but ideally in real world, I would makes only unit tests runs with PR review and UITests to run only before the release or at scheduled times
+- here is a successful [Job](https://github.com/0mar32/WallaMarvel/actions/runs/17225025777/job/48869069541) to check.
+- you can trigger the workflow be either raising a PR against main or trigger it manually from Github -> Actions -> workflows -> iOS CI
 
 ## Improvements & Considerations
 - Use a dependency injection (DI) container to configure and share dependencies.
@@ -71,3 +73,4 @@ To provide a smooth, offline-friendly experience:
 - Implement a shared-element transition when opening the Heroes detail screen, animating the image into the destination view.
 - Modularize UI tests—move them out of the app target.
 - Add a linter such as SwiftLint.
+- Improve CI logs
