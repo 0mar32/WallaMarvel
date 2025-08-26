@@ -59,12 +59,12 @@ To provide a smooth, offline-friendly experience:
 - **UI Tests** — Live in the app target and cover the core user flow.
 
 ## CI
-- It is work in progress on brach `MRVL-16/feature/added-ci`
 - I am using Github Actions
 - Added one workflow that runs both unit tests and UITests
 - Just created one to run all the tests including the UITests with any PR review, but ideally in real world, I would makes only unit tests runs with PR review and UITests to run only before the release or at scheduled times
 - here is a successful [Job](https://github.com/0mar32/WallaMarvel/actions/runs/17225025777/job/48869069541) to check.
 - you can trigger the workflow be either raising a PR against main or trigger it manually from Github -> Actions -> workflows -> iOS CI
+- `main` branch is protected and require PRs and checks to be passed in order to merge
 
 ## Improvements & Considerations
 - Use a dependency injection (DI) container to configure and share dependencies.
