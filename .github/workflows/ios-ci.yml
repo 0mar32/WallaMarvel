@@ -1,0 +1,140 @@
+name: iOS CI
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  PROJECT: WallaMarvel/WallaMarvel.xcodeproj
+  APP_SCHEME: WallaMarvel
+  DESTINATION: platform=iOS Simulator,OS=18.5,name=iPhone 16 Pro
+  CONFIGURATION: Debug
+  XCODE_VERSION: '16.4'
+
+jobs:
+  build-and-test:
+    runs-on: macos-15
+
+    steps:
+      - name: Check out
+        uses: actions/checkout@v4
+
+      - name: Select Xcode 16.4
+        uses: maxim-lobanov/setup-xcode@v1
+        with:
+          xcode-version: ${{ env.XCODE_VERSION }}
+
+      - name: Show selected toolchain
+        run: |
+          xcodebuild -version
+          swift --version
+
+      - name: Cache SPM
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.swiftpm
+            ~/Library/Caches/org.swift.swiftpm
+            ~/Library/Developer/Xcode/DerivedData/SourcePackages
+          key: ${{ runner.os }}-spm-${{ hashFiles('**/Package.resolved') }}
+          restore-keys: |
+            ${{ runner.os }}-spm-
+
+      - name: Resolve packages
+        run: |
+          set -eo pipefail
+          xcodebuild -resolvePackageDependencies -project "${PROJECT}"
+
+      - name: Run module unit test schemes (exclude UITests)
+        shell: bash
+        run: |
+          set -eo pipefail
+
+          # Prefer allow-list if present; else auto-detect "*Tests" excluding "*UITests"
+          if [ -f .ci/test-schemes.txt ]; then
+            SCHEMES="$(sed -e 's/#.*$//' -e 's/^[[:space:]]*//' -e 's/[[:space:]]*$//' .ci/test-schemes.txt \
+              | awk 'NF' | sort -u)"
+          else
+            SCHEMES="$(xcodebuild -list -project "${PROJECT}" \
+              | awk '/Schemes:/{p=1;next} p && NF {sub(/^ +/,""); print} p && !NF {exit}' \
+              | grep -E 'Tests$' | grep -v -E 'UITests$' | sort -u)"
+          fi
+
+          if [ -z "$SCHEMES" ]; then
+            echo "No unit-test schemes found. Ensure your test schemes are Shared or list them in .ci/test-schemes.txt."
+            exit 0
+          fi
+
+          echo "→ Running unit-test schemes:"
+          printf '  %s\n' "$SCHEMES"
+
+          fail=0
+          while IFS= read -r scheme; do
+            [ -z "$scheme" ] && continue
+            echo "===== Unit Testing: $scheme ====="
+            bundle="Unit-${scheme// /_}.xcresult"
+            xcodebuild test \
+              -project "${PROJECT}" \
+              -scheme "${scheme}" \
+              -configuration "${CONFIGURATION}" \
+              -destination "${DESTINATION}" \
+              -testLanguage en \
+              -testRegion US \
+              -parallel-testing-enabled NO \
+              -maximum-parallel-testing-workers 1 \
+              -resultBundlePath "${bundle}" \
+              CODE_SIGNING_ALLOWED=NO || fail=1
+          done <<< "$SCHEMES"
+
+          exit $fail
+
+      - name: Run UI test schemes (ends with UITests)
+        shell: bash
+        run: |
+          set -eo pipefail
+
+          UI_SCHEMES="$(xcodebuild -list -project "${PROJECT}" \
+            | awk '/Schemes:/{p=1;next} p && NF {sub(/^ +/,""); print} p && !NF {exit}' \
+            | grep -E 'UITests$' | sort -u)"
+
+          if [ -z "$UI_SCHEMES" ]; then
+            echo "No UI test schemes (ending with UITests) found. Skipping."
+            exit 0
+          fi
+
+          echo "→ Running UI-test schemes:"
+          printf '  %s\n' "$UI_SCHEMES"
+
+          fail=0
+          while IFS= read -r scheme; do
+            [ -z "$scheme" ] && continue
+            echo "===== UI Testing: $scheme ====="
+            bundle="UI-${scheme// /_}.xcresult"
+            xcodebuild test \
+              -project "${PROJECT}" \
+              -scheme "${scheme}" \
+              -configuration "${CONFIGURATION}" \
+              -destination "${DESTINATION}" \
+              -testLanguage en \
+              -testRegion US \
+              -parallel-testing-enabled NO \
+              -maximum-parallel-testing-workers 1 \
+              -resultBundlePath "${bundle}" \
+              CODE_SIGNING_ALLOWED=NO || fail=1
+          done <<< "$UI_SCHEMES"
+
+          exit $fail
+
+      - name: Upload .xcresult bundles
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: xcresults
+          path: |
+            *.xcresult
+          if-no-files-found: ignore

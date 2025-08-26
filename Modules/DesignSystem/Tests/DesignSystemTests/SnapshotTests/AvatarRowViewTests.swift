@@ -105,11 +105,10 @@ final class AvatarRowViewTests: XCTestCase {
 extension AvatarRowViewTests {
     func mockedImageURL() -> URL {
         let url = URL(string: "https://tests.example/avatar-loaded-highlighted")!
-        KFTestCache.preloadMemory(image: TestImages.solid(.systemIndigo), for: url)
+        KFTestCache.preloadMemory(image: UIImage(named: "hero", in: .module, compatibleWith: nil)!, for: url)
         return url
     }
 }
-
 
 enum KFTestCache {
     static func clearAll() {
@@ -119,16 +118,5 @@ enum KFTestCache {
 
     static func preloadMemory(image: UIImage, for url: URL) {
         ImageCache.default.store(image, forKey: url.absoluteString, toDisk: false)
-    }
-}
-
-enum TestImages {
-    /// A tiny, deterministic test image (solid color)
-    static func solid(_ color: UIColor = .systemRed, size: CGSize = .init(width: 40, height: 40)) -> UIImage {
-        let renderer = UIGraphicsImageRenderer(size: size)
-        return renderer.image { ctx in
-            color.setFill()
-            ctx.fill(CGRect(origin: .zero, size: size))
-        }
     }
 }
