@@ -45,24 +45,28 @@ final class HeroesListViewModelTests: XCTestCase {
             characters: [ .sample(id: 1), .sample(id: 2), .sample(id: 3) ]
         )
 
-        let gate = CallGate(); await gate.close()
-        interactor.streamPlan = .cacheThenFreshGated(cache, fresh, gate)
+        interactor.streamPlan = .manual
 
-        // drive
+        // drive VM
         let run = Task { @MainActor in
             await sut.loadInitialHeroesStream()
         }
 
-        // after cache arrives, VM should show 2 rows
-        await gate.waitUntilBlocked()
+        // ensure VM subscribed to the stream
+        await interactor.waitUntilSubscribed()
+
+        // emit cache → assert VM shows it
+        interactor.emit(cache)
+        await Task.yield() // let MainActor process state
         if case let .loaded(model) = sut.state {
             XCTAssertEqual(model.heroes.count, 2)
         } else {
             XCTFail("Expected .loaded after cache")
         }
 
-        // then let fresh flow and complete
-        await gate.openGate()
+        // emit fresh → finish → assert final state
+        interactor.emit(fresh)
+        interactor.finishStream()
         _ = await run.value
 
         if case let .loaded(model) = sut.state {
@@ -113,37 +117,34 @@ final class HeroesListViewModelTests: XCTestCase {
         await sut.loadInitialHeroesStream()
         XCTAssertEqual(sut.state.heroes.count, 10)
 
-        // next page result (11..20)
-        interactor.pageResultsQueue = [
-            .success(.sample(count: 10, limit: 10, offset: 10, total: 20,
-                             characters: (11...20).map { .sample(id: $0) }))
-        ]
+        // Prepare page result (11..20), but drive it manually
+        let page = HeroesContainer.sample(
+            count: 10, limit: 10, offset: 10, total: 20,
+            characters: (11...20).map { .sample(id: $0) }
+        )
+        interactor.beginManualNextPage() // suspend fetchNextPage and let us resume later
 
-        // gate pagination so we can see spinner
-        let gate = CallGate(); await gate.close()
-        interactor.pageGate = gate
-
-        // trigger near end (index 7 is in last 5 for 10 items)
+        // Trigger near end
         let trigger = sut.state.heroes[7]
         let task = Task { @MainActor in
             await sut.loadMoreHeroesIfNeeded(currentHero: trigger)
         }
 
-        // ensure fetchNextPage is now waiting at the gate
-        await gate.waitUntilBlocked()
+        // Wait until fetchNextPage is actually suspended
+        await interactor.waitUntilManualNextPageIsBlocked()
 
-        // assert spinner ON
+        // Spinner should be ON now
         if case let .loaded(model) = sut.state {
             XCTAssertTrue(model.isLoadingMore)
         } else {
             XCTFail("Expected .loaded with isLoadingMore == true")
         }
 
-        // release pagination; finish and merge
-        await gate.openGate()
+        // Resume with the manual result
+        interactor.resolveManualNextPage(.success(page))
         _ = await task.value
 
-        // assert final merged state
+        // Final assertions
         if case let .loaded(model) = sut.state {
             XCTAssertEqual(model.heroes.count, 20)
             XCTAssertFalse(model.isLoadingMore)
