@@ -53,6 +53,11 @@ public final class PersistenceController: Sendable {
             container.persistentStoreDescriptions = [description]
         }
 
+        // Enable lightweight migration
+        let desc = container.persistentStoreDescriptions.first
+        desc?.setOption(true as NSNumber, forKey: NSMigratePersistentStoresAutomaticallyOption)
+        desc?.setOption(true as NSNumber, forKey: NSInferMappingModelAutomaticallyOption)
+
         var loadError: Error?
         container.loadPersistentStores { _, error in
             loadError = error
@@ -61,14 +66,16 @@ public final class PersistenceController: Sendable {
             preconditionFailure("💥 Failed to load Core Data store: \(error)")
         }
 
-        let viewContext = container.viewContext
-        viewContext.automaticallyMergesChangesFromParent = true
-        viewContext.mergePolicy = NSMergePolicy(merge: .overwriteMergePolicyType)
+        // setting merge policy
+        container.viewContext.automaticallyMergesChangesFromParent = true
+        container.viewContext.mergePolicy = NSMergePolicy(
+            merge: .mergeByPropertyObjectTrumpMergePolicyType
+        )
     }
 
     public func newBackgroundContext() -> NSManagedObjectContext {
         let context = container.newBackgroundContext()
-        context.mergePolicy = NSMergePolicy(merge: .overwriteMergePolicyType)
+        context.mergePolicy = NSMergePolicy(merge: .mergeByPropertyObjectTrumpMergePolicyType)
         return context
     }
 }

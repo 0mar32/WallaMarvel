@@ -8,7 +8,7 @@ public protocol HeroesRepositoryProtocol: Sendable {
     func fetchHeroesStream(limit: Int, offset: Int) -> AsyncThrowingStream<HeroesContainer, Error>
 }
 
-public class HeroesRepository: HeroesRepositoryProtocol, @unchecked Sendable {
+public final class HeroesRepository: HeroesRepositoryProtocol, Sendable {
     // MARK: - Dependancies
 
     private let apiService: HeroesAPIServiceProtocol
@@ -39,11 +39,11 @@ public class HeroesRepository: HeroesRepositoryProtocol, @unchecked Sendable {
     ///   - offset: the starting index where the data should retuned from
     /// - Returns: An AsyncStream that always gives 1-2 events and completes.
     public func fetchHeroesStream(limit: Int, offset: Int = 0) -> AsyncThrowingStream<HeroesContainer, Error> {
-        AsyncThrowingStream(bufferingPolicy: .unbounded) { continuation in
+        AsyncThrowingStream(bufferingPolicy: .bufferingNewest(2)) { continuation in
             let task = Task {
                 do {
                     // 1) Emit cached snapshot if any
-                    let cached = try storageService.fetchAllHeroes()
+                    let cached = try await storageService.fetchAllHeroes()
                     if !cached.isEmpty {
                         continuation.yield(HeroesContainer(
                             count: cached.count,
@@ -65,11 +65,12 @@ public class HeroesRepository: HeroesRepositoryProtocol, @unchecked Sendable {
                     // here we fetch the equivalent remote data in chunks, because the API does not support fetching more than 100
                     // object per one call
                     while currentOffset < refreshTarget {
+                        try Task.checkCancellation()
                         let fetchLimit = min(maxPageSize, refreshTarget - currentOffset)
                         let page = try await fetchRemotePage(limit: fetchLimit, offset: currentOffset)
                         all.append(contentsOf: page.characters)
                         newTotal = page.total
-                        try storageService.storeHeroes(page.characters, offset: currentOffset)
+                        try await storageService.storeHeroes(page.characters, offset: currentOffset)
                         currentOffset += fetchLimit
                     }
 
@@ -82,6 +83,8 @@ public class HeroesRepository: HeroesRepositoryProtocol, @unchecked Sendable {
                     ))
                     continuation.finish()
 
+                } catch is CancellationError {
+                    continuation.finish()
                 } catch {
                     continuation.finish(throwing: error) // already mapped in fetchRemotePage
                 }
@@ -101,7 +104,8 @@ public class HeroesRepository: HeroesRepositoryProtocol, @unchecked Sendable {
         // we can here put guard to make sure that the limit is less than 100, as the APIs enforces this.
         // but this is not good for backward compatiljblity, if we want the page size later on to be back end driven
         let remoteContainer = try await fetchRemotePage(limit: limit, offset: offset)
-        try storageService.storeHeroes(remoteContainer.characters, offset: offset)
+        try await storageService
+            .storeHeroes(remoteContainer.characters, offset: offset)
         return remoteContainer
     }
 }

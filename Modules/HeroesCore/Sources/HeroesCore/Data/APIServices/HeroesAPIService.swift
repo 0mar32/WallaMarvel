@@ -3,11 +3,11 @@ import Foundation
 import NetworkClient
 import AppConfig
 
-public protocol HeroesAPIServiceProtocol {
+public protocol HeroesAPIServiceProtocol: Sendable {
     func fetchHeroes(paginationInfo: PaginationDto?) async throws -> HeroesResponseDto
 }
 
-public class HeroesAPIService: HeroesAPIServiceProtocol {
+public final class HeroesAPIService: HeroesAPIServiceProtocol {
 
     private let networkClient: NetworkClientProtocol
 
