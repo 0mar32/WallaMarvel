@@ -7,7 +7,7 @@
 
 @testable import HeroesCore
 
-final class HeroesStorageServiceMock: HeroesStorageServiceProtocol {
+final class HeroesStorageServiceMock: HeroesStorageServiceProtocol, @unchecked Sendable {
     var stubbedAllHeroes: [Hero] = []
 
     private(set) var recordedStores: [(heroes: [Hero], offset: Int)] = []

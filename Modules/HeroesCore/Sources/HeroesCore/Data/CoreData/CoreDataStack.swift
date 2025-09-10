@@ -8,7 +8,7 @@
 import CoreData
 import AppConfig
 
-public protocol CoreDataStack {
+public protocol CoreDataStack: Sendable {
     var viewContext: NSManagedObjectContext { get }
     func newBackgroundContext() -> NSManagedObjectContext
 }

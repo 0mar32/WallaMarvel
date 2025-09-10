@@ -47,6 +47,7 @@ class HeroesListViewModel: ObservableObject {
 
         do {
             for try await container in stream {
+                try Task.checkCancellation()
                 allHeroes = container.characters
                 let ui = heroesListMapper.map(heroes: container.characters)
                 // animate to smoothly change the list if the remote data is different from the cache.
@@ -87,6 +88,7 @@ extension HeroesListViewModel {
     private func requestNextPageAndMerge(using currentHeroes: [HeroListItemUIModel]) async {
         do {
             let container = try await interactor.fetchNextPage()
+            try Task.checkCancellation()
             allHeroes.append(contentsOf: container.characters)
 
             let newHeroesListUIModel = heroesListMapper.map(heroes: container.characters)

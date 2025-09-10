@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788.4" systemVersion="24G84" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="23788.4" systemVersion="24G90" minimumToolsVersion="Automatic" sourceLanguage="Swift" usedWithSwiftData="YES" userDefinedModelVersionIdentifier="">
     <entity name="HeroEntity" representedClassName="HeroEntity" syncable="YES" codeGenerationType="class">
         <attribute name="heroDescription" optional="YES" attributeType="String" defaultValueString=""/>
         <attribute name="id" attributeType="Integer 64" defaultValueString="0" usesScalarValueType="YES"/>
@@ -9,6 +9,11 @@
         <attribute name="thumbnailPath" optional="YES" attributeType="String"/>
         <relationship name="series" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="SeriesEntity" inverseName="hero" inverseEntity="SeriesEntity"/>
         <relationship name="stories" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="StoryEntity" inverseName="hero" inverseEntity="StoryEntity"/>
+        <uniquenessConstraints>
+            <uniquenessConstraint>
+                <constraint value="id"/>
+            </uniquenessConstraint>
+        </uniquenessConstraints>
     </entity>
     <entity name="SeriesEntity" representedClassName="SeriesEntity" syncable="YES" codeGenerationType="class">
         <attribute name="name" optional="YES" attributeType="String"/>

@@ -7,7 +7,7 @@
 
 @testable import HeroesCore
 
-final class HeroesAPIServiceMock: HeroesAPIServiceProtocol {
+final class HeroesAPIServiceMock: HeroesAPIServiceProtocol, @unchecked Sendable {
     struct Request: Equatable {
         let limit: Int
         let offset: Int

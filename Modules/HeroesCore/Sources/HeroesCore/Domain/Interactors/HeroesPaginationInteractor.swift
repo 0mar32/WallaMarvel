@@ -47,7 +47,7 @@ public actor HeroesPaginationInteractor: HeroesPaginationInteractorProtocol {
     /// ideally should be used for getting first page
     /// - Returns: an AsyncStream that gives 1-2 events cache(if any) ->  remote
     public func initialStream() -> AsyncThrowingStream<HeroesContainer, Error> {
-        AsyncThrowingStream<HeroesContainer, Error>(bufferingPolicy: .unbounded) { continuation in
+        AsyncThrowingStream<HeroesContainer, Error>(bufferingPolicy: .bufferingNewest(2)) { continuation in
             Task { [weak self] in
                 guard let self else { return }
 
@@ -67,14 +67,14 @@ public actor HeroesPaginationInteractor: HeroesPaginationInteractorProtocol {
 
                     do {
                         // Forward repo stream (cache → fresh), align counters, emit to caller
-                        for try await container in self.repository.fetchHeroesStream(
-                            limit: self.limit,
-                            offset: 0
-                        ) {
+                        for try await container in self.repository.fetchHeroesStream(limit: self.limit, offset: 0) {
+                            try Task.checkCancellation()
                             await self.align(with: container)
                             continuation.yield(container)
                         }
                         continuation.finish()
+                    } catch is CancellationError {
+                        continuation.finish() // close cleanly on cancel
                     } catch {
                         continuation.finish(throwing: error)
                         throw error
